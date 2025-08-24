@@ -1,0 +1,4 @@
+drf-spectacular
+black
+isort
+coverage

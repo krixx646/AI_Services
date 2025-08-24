@@ -3,7 +3,7 @@ from .models import Student
 from django.contrib.auth.admin import UserAdmin
 
 
-@admin_register(Student)
+@admin.register(Student)
 class studentAdmin(UserAdmin):
     fieldsets = UserAdmin.fieldsets + (
     ("Extra", {"fields": ("phone", "bio", "avatar", "public_id")}),
