@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from .models import Student
 from .serializers import RegistrationSerialiser, LoginSerialiser, ProfileSerialiser
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser, IsAuthenticatedOrReadOnly
+from django.contrib.auth import login
 
 
 
@@ -30,6 +31,10 @@ class LoginViewSet(viewsets.GenericViewSet):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
+        # Establish a server-side session for browser clients (optional alongside JWT)
+        user = serializer.validated_data.get("user")
+        if user is not None:
+            login(request, user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class ProfileViewSet(viewsets.ModelViewSet):

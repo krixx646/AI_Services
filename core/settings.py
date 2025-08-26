@@ -168,6 +168,14 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "60/min",
+        "user": "120/min",
+    },
 }
 AUTH_USER_MODEL = "accounts.Student"
 
@@ -194,3 +202,7 @@ AWS_S3_REGION_NAME = os.environ.get('AWS_S3_REGION_NAME', '')
 
 # CORS (allow all in dev; tighten in prod)
 CORS_ALLOW_ALL_ORIGINS = DEBUG
+
+# Payments / Paystack
+_allowed_currencies = os.environ.get('PAYSTACK_ALLOWED_CURRENCIES', 'NGN,USD')
+PAYSTACK_ALLOWED_CURRENCIES = [c.strip().upper() for c in _allowed_currencies.split(',') if c.strip()]
