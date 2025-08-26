@@ -16,22 +16,31 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import TemplateView
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 from django.conf import settings
 
 
 
 urlpatterns = [
+    # Admin
     path('admin/', admin.site.urls),
-    path('accounts/', include('accounts.urls')),
-    path('blog/', include('blog.urls')),
-    path('bots/', include('bots.urls')),
-    path('demo/', include('demo.urls')),
-    path('payments/', include('payments.urls')),
-    path('processing/', include('processing.urls')),
+
+    # API namespaces
+    path('api/accounts/', include('accounts.urls')),
+    path('api/blog/', include('blog.urls')),
+    path('api/bots/', include('bots.urls')),
+    path('api/demo/', include('demo.urls')),
+    path('api/payments/', include('payments.urls')),
+    path('api/processing/', include('processing.urls')),
 
     # API schema and docs
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('api/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+
+    # Site routes (templates)
+    path('', TemplateView.as_view(template_name='index.html'), name='home'),
+    path('blog/', TemplateView.as_view(template_name='blog/list.html'), name='blog_list'),
+    path('blog/<slug:slug>/', TemplateView.as_view(template_name='blog/detail.html'), name='blog_detail'),
 ]
