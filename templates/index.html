@@ -1,1 +1,31 @@
-{% extends  base.html %}{% block content %}<h1>Home</h1>{% endblock %}
+{% extends 'base.html' %}{% block content %}
+<section class="py-5 text-center container">
+  <div class="row py-lg-5">
+    <div class="col-lg-8 col-md-10 mx-auto">
+      <h1 class="display-4 fw-bold">The future is collective</h1>
+      <p class="lead my-3">We turn your lecture notes into a verified, hallucination‑proof chatbot. Pay securely, we clean and extract Q&A, then ship a Botpress link.</p>
+      <p>
+        <a href="/api/docs/" class="btn btn-primary my-2">Get Started</a>
+        <a href="/blog/" class="btn btn-outline-secondary my-2">Learn More</a>
+      </p>
+    </div>
+  </div>
+  </section>
+
+<section class="container py-5">
+  <div class="row g-4">
+    <div class="col-md-6">
+      <div class="p-4 border rounded-3 h-100">
+        <h3 class="fw-semibold">Fiscal hosting</h3>
+        <p class="mb-0">Operate under a trusted umbrella. We handle payments, accounting, and transparent reporting while you focus on building your bot.</p>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="p-4 border rounded-3 h-100">
+        <h3 class="fw-semibold">Shared account</h3>
+        <p class="mb-0">Collaborate with classmates and teams. Shared budgets make contributions and disbursements transparent end‑to‑end.</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
