@@ -10,7 +10,11 @@ class RegistrationSerialiser(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = ("email", "password", "confirm_password", "username", "phone", "bio", "avatar")
-        extra_kwargs = {"password": {"write_only": True}}
+        extra_kwargs = {
+            "password": {"write_only": True},
+            "bio": {"required": False, "allow_blank": True, "default": ""},
+            "avatar": {"required": False, "allow_null": True},
+        }
 
     def validate_email(self, value):
         if Student.objects.filter(email__iexact=value).exists():
@@ -29,7 +33,7 @@ class RegistrationSerialiser(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data.pop("confirm_password", None)
         password = validated_data.pop("password")
-        username = validated_data.get("username") or validated_data.get("email", "").split("@")[0]
+        username = validated_data.pop("username", None) or validated_data.get("email", "").split("@")[0]
         user = Student.objects.create_user(username=username, password=password, **validated_data)
         return user
 

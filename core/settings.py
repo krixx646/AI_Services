@@ -33,6 +33,11 @@ DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
 _hosts = os.environ.get('ALLOWED_HOSTS', '')
 ALLOWED_HOSTS = [h.strip() for h in _hosts.split(',') if h.strip()] if _hosts else []
 
+# CSRF trusted origins (comma-separated list of full scheme+host, e.g., https://yourname.pythonanywhere.com)
+_csrf_trusted = os.environ.get('CSRF_TRUSTED_ORIGINS', '')
+if _csrf_trusted:
+    CSRF_TRUSTED_ORIGINS = [h.strip() for h in _csrf_trusted.split(',') if h.strip()]
+
 
 # Application definition
 
@@ -200,9 +205,18 @@ AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY', '')
 AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME', '')
 AWS_S3_REGION_NAME = os.environ.get('AWS_S3_REGION_NAME', '')
 
-# CORS (allow all in dev; tighten in prod)
-CORS_ALLOW_ALL_ORIGINS = DEBUG
+# CORS
+_cors = os.environ.get('CORS_ALLOWED_ORIGINS', '')
+if _cors:
+    CORS_ALLOWED_ORIGINS = [h.strip() for h in _cors.split(',') if h.strip()]
+else:
+    # allow all in dev; empty list in prod unless set
+    CORS_ALLOW_ALL_ORIGINS = DEBUG
 
 # Payments / Paystack
 _allowed_currencies = os.environ.get('PAYSTACK_ALLOWED_CURRENCIES', 'NGN,USD')
 PAYSTACK_ALLOWED_CURRENCIES = [c.strip().upper() for c in _allowed_currencies.split(',') if c.strip()]
+
+# Static files storage for production
+if not DEBUG:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

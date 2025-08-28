@@ -1,3 +1,32 @@
 from django.test import TestCase
+from rest_framework.test import APIClient
+from django.contrib.auth import get_user_model
+
+
+class AccountsApiTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+
+    def test_register_and_login(self):
+        # Register
+        payload = {
+            "email": "test@example.com",
+            "password": "strongpass123",
+            "confirm_password": "strongpass123",
+            "username": "testuser",
+            "phone": "0800000000",
+        }
+        r = self.client.post("/api/accounts/register/", payload, format="json")
+        self.assertEqual(r.status_code, 201)
+
+        # Login
+        r = self.client.post(
+            "/api/accounts/login/",
+            {"email": payload["email"], "password": payload["password"]},
+            format="json",
+        )
+        self.assertEqual(r.status_code, 200)
+        self.assertIn("access", r.data)
+        self.assertIn("refresh", r.data)
 
 # Create your tests here.

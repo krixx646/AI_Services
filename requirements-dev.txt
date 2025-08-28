@@ -2,3 +2,5 @@ drf-spectacular
 black
 isort
 coverage
+gunicorn
+whitenoise

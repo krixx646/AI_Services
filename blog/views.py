@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, views, status, filters
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from django_filters.rest_framework import DjangoFilterBackend
@@ -72,6 +73,14 @@ class PostViewSet(viewsets.ModelViewSet):
             return Response({"detail": "Not allowed"}, status=status.HTTP_403_FORBIDDEN)
         return super().destroy(request, *args, **kwargs)
 
+    @action(detail=False, methods=["get"], url_path=r"by-slug/(?P<slug>[^/.]+)")
+    def by_slug(self, request, slug=None):
+        obj = get_object_or_404(Post, slug=slug)
+        if obj.status != Post.Status.PUBLISHED and not (request.user.is_staff or (request.user.is_authenticated and obj.author_id == request.user.id)):
+            return Response({"detail": "Not found"}, status=status.HTTP_404_NOT_FOUND)
+        serializer = self.get_serializer(obj)
+        return Response(serializer.data)
+
 
 class PostCommentsView(views.APIView):
     permission_classes = [AllowAny]
@@ -109,4 +118,35 @@ class CommentModerateView(views.APIView):
             return Response({"detail": "Invalid action"}, status=status.HTTP_400_BAD_REQUEST)
         comment.save(update_fields=["status"])
         return Response({"status": comment.status})
+
+
+class CommentDetailView(views.APIView):
+    def get_object(self, request, comment_id: int):
+        comment = get_object_or_404(Comment, pk=comment_id)
+        user = request.user
+        if not (user.is_authenticated and (user.is_staff or (comment.author_id == user.id))):
+            return None
+        return comment
+
+    def get(self, request, comment_id: int):
+        comment = self.get_object(request, comment_id)
+        if not comment:
+            return Response({"detail": "Not allowed"}, status=status.HTTP_403_FORBIDDEN)
+        return Response(CommentSerializer(comment).data)
+
+    def patch(self, request, comment_id: int):
+        comment = self.get_object(request, comment_id)
+        if not comment:
+            return Response({"detail": "Not allowed"}, status=status.HTTP_403_FORBIDDEN)
+        serializer = CommentSerializer(comment, data=request.data, partial=True, context={"request": request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    def delete(self, request, comment_id: int):
+        comment = self.get_object(request, comment_id)
+        if not comment:
+            return Response({"detail": "Not allowed"}, status=status.HTTP_403_FORBIDDEN)
+        comment.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
