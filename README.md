@@ -1,3 +1,41 @@
+## Project Overview
+
+This project is an AI‑Powered Notes‑to‑Chatbot platform built with Django and Django REST Framework. Students register, pay via Paystack, and receive a Botpress chatbot link generated from their notes (processed manually in this MVP). The site also includes a fully functional Blogging Platform (posts, categories, tags, comments with moderation) and public API documentation via Swagger UI and ReDoc.
+
+## How this fulfills “Blogging Platform API”
+
+- **CRUD for blog posts (and users)**:
+  - Posts: `GET|POST /api/blog/posts/`, `GET|PUT|PATCH|DELETE /api/blog/posts/{id}/` (authors can edit/delete their own; staff can manage all).
+  - Users: `POST /api/accounts/register/`, `POST /api/accounts/login/`, `GET|PUT|PATCH|DELETE /api/accounts/profile/{id}/`.
+- **View posts by category or author**:
+  - Filter by author: `GET /api/blog/posts/?author={user_id}`
+  - Filter by category: `GET /api/blog/posts/?categories={category_id}`
+  - Also supported: tags via `?tags={tag_id}`, search via `?search=keyword`, and retrieve by slug: `GET /api/blog/posts/by-slug/{slug}/`.
+- **Django ORM for database interactions**:
+  - Models defined in `blog/models.py` and `accounts/models.py` use the Django ORM.
+  - Querysets in `blog/views.py` use `.select_related()` / `.prefetch_related()` and `DjangoFilterBackend` for filtering.
+- **Deployment on Heroku or PythonAnywhere**:
+  - Deployed on PythonAnywhere (free tier). See “Deploying on PythonAnywhere” below. The app is production‑ready for either PythonAnywhere or Heroku with environment variables.
+- **Extras provided**:
+  - Comments with moderation endpoints, JWT/session auth, and API docs at `/api/docs/` and `/api/redoc/`.
+
+Quick examples:
+```bash
+# List published posts by a specific author
+curl \
+  "http://localhost:8000/api/blog/posts/?author=1" -s | jq '.[0:3]'
+
+# List published posts in a category
+curl \
+  "http://localhost:8000/api/blog/posts/?categories=2" -s | jq '.[0:3]'
+
+# Create a post (auth required; author set from your user)
+curl -X POST http://localhost:8000/api/blog/posts/ \
+  -H "Authorization: Bearer <ACCESS_TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Hello","content":"World","status":"published"}'
+```
+
 ## Developer Tooling
 
 Install optional dev tools in your environment:
