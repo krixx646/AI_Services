@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'payments',
     'processing',
     'accounts',
+    'portfolio',
 
 ]
 
@@ -194,9 +195,9 @@ SPECTACULAR_SETTINGS = {
 # App-specific environment flags and secrets
 AUTO_APPROVE_COMMENTS = os.environ.get('AUTO_APPROVE_COMMENTS', 'True').lower() == 'true'
 
-PAYSTACK_PUBLIC_KEY = os.environ.get('PAYSTACK_PUBLIC_KEY', '')
-PAYSTACK_SECRET_KEY = os.environ.get('PAYSTACK_SECRET_KEY', '')
-PAYSTACK_WEBHOOK_SECRET = os.environ.get('PAYSTACK_WEBHOOK_SECRET', '')
+PAYSTACK_PUBLIC_KEY = (os.environ.get('PAYSTACK_PUBLIC_KEY', '') or '').strip()
+PAYSTACK_SECRET_KEY = (os.environ.get('PAYSTACK_SECRET_KEY', '') or '').strip()
+PAYSTACK_WEBHOOK_SECRET = (os.environ.get('PAYSTACK_WEBHOOK_SECRET', '') or '').strip()
 
 BOTPRESS_DEMO_BOT_URL = os.environ.get('BOTPRESS_DEMO_BOT_URL', '')
 
@@ -214,7 +215,7 @@ else:
     CORS_ALLOW_ALL_ORIGINS = DEBUG
 
 # Payments / Paystack
-_allowed_currencies = os.environ.get('PAYSTACK_ALLOWED_CURRENCIES', 'NGN,USD')
+_allowed_currencies = os.environ.get('PAYSTACK_ALLOWED_CURRENCIES', 'NGN')
 PAYSTACK_ALLOWED_CURRENCIES = [c.strip().upper() for c in _allowed_currencies.split(',') if c.strip()]
 
 # Static files storage for production

@@ -1,0 +1,43 @@
+{% extends 'base.html' %}{% block content %}
+<div class="container py-5" style="max-width: 720px;">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h3 class="card-title mb-3">Payment Status</h3>
+      <p class="text-muted mb-4">Reference: <code id="ref">{{ reference }}</code></p>
+      <div id="statusBox" class="alert alert-info">Verifying your payment...</div>
+      <div id="details" class="d-none">
+        <dl class="row mb-0">
+          <dt class="col-4">Amount</dt><dd class="col-8" id="amount">—</dd>
+          <dt class="col-4">Currency</dt><dd class="col-8" id="currency">—</dd>
+          <dt class="col-4">Status</dt><dd class="col-8" id="status">—</dd>
+          <dt class="col-4">Paid at</dt><dd class="col-8" id="paidAt">—</dd>
+        </dl>
+      </div>
+      <hr>
+      <a href="/dashboard/" class="btn btn-primary">Go to Dashboard</a>
+    </div>
+  </div>
+</div>
+<script>
+(async function(){
+  const ref = document.getElementById('ref').textContent || '';
+  if(!ref){ document.getElementById('statusBox').textContent = 'Missing reference.'; return; }
+  try {
+    const resp = await fetch(`/api/payments/verify/${ref}/`);
+    const data = await resp.json();
+    const ok = data && data.data && data.data.status === 'success';
+    document.getElementById('statusBox').className = `alert ${ok?'alert-success':'alert-danger'}`;
+    document.getElementById('statusBox').textContent = ok ? 'Payment successful' : 'Payment not successful yet';
+    const kobo = data?.data?.amount || 0; const amount = (kobo/100).toFixed(2);
+    document.getElementById('amount').textContent = amount;
+    document.getElementById('currency').textContent = data?.data?.currency || '—';
+    document.getElementById('status').textContent = data?.data?.status || '—';
+    document.getElementById('paidAt').textContent = data?.data?.paidAt || data?.data?.transaction_date || '—';
+    document.getElementById('details').classList.remove('d-none');
+  } catch(e){
+    document.getElementById('statusBox').className = 'alert alert-danger';
+    document.getElementById('statusBox').textContent = 'Failed to verify payment.';
+  }
+})();
+</script>
+{% endblock %}

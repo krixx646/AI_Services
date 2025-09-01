@@ -18,7 +18,10 @@ from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
-from .views import SearchView
+from .views import SearchView, PricingPageView
+from accounts.views import LoginPageView, SignupPageView, ProfilePageView, LogoutView, DashboardView
+from django.conf import settings
+from django.conf.urls.static import static
 from django.conf import settings
 
 
@@ -46,4 +49,13 @@ urlpatterns = [
     path('', TemplateView.as_view(template_name='index.html'), name='home'),
     path('blog/', TemplateView.as_view(template_name='blog/list.html'), name='blog_list'),
     path('blog/<slug:slug>/', TemplateView.as_view(template_name='blog/detail.html'), name='blog_detail'),
+    path('pricing/', PricingPageView.as_view(), name='pricing'),
+    path('login/', LoginPageView.as_view(), name='login'),
+    path('signup/', SignupPageView.as_view(), name='signup'),
+    path('profile/', ProfilePageView.as_view(), name='profile'),
+    path('logout/', LogoutView.as_view(), name='logout'),
+    path('dashboard/', DashboardView.as_view(), name='dashboard'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

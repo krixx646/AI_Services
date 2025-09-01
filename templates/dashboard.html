@@ -1,0 +1,75 @@
+{% extends 'base.html' %}{% block content %}
+<div class="container py-5">
+  {% if request.GET.status == 'success' %}
+  <div class="alert alert-success d-flex align-items-center" role="alert">
+    <i class="bi bi-check-circle me-2"></i>
+    <div>Payment successful. Your bot will be prepared shortly.</div>
+  </div>
+  {% elif request.GET.status == 'failed' %}
+  <div class="alert alert-danger d-flex align-items-center" role="alert">
+    <i class="bi bi-x-circle me-2"></i>
+    <div>Payment failed. Please try again.</div>
+  </div>
+  {% endif %}
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0">Dashboard</h1>
+    <a class="btn btn-outline-primary" href="/profile/">Edit Profile</a>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-7">
+      <div class="card h-100">
+        <div class="card-header">My Bots</div>
+        <div class="card-body">
+          {% if bots %}
+          <div class="table-responsive">
+            <table class="table align-middle">
+              <thead><tr><th>Reference</th><th>Status</th><th>Link</th><th>Created</th></tr></thead>
+              <tbody>
+                {% for b in bots %}
+                <tr>
+                  <td><code>{{ b.reference }}</code></td>
+                  <td><span class="badge text-bg-{% if b.status == 'ready' %}success{% elif b.status == 'processing' %}warning{% else %}secondary{% endif %}">{{ b.status }}</span></td>
+                  <td>{% if b.bot_url %}<a href="{{ b.bot_url }}" target="_blank">Open</a>{% else %}-{% endif %}</td>
+                  <td>{{ b.created_at|date:"Y-m-d H:i" }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <p class="text-muted mb-0">No bots yet. Start a new order when pricing is ready.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-5">
+      <div class="card h-100">
+        <div class="card-header">Payments</div>
+        <div class="card-body">
+          {% if payments %}
+          <div class="table-responsive">
+            <table class="table align-middle">
+              <thead><tr><th>Reference</th><th>Amount</th><th>Status</th><th>When</th></tr></thead>
+              <tbody>
+                {% for p in payments %}
+                <tr>
+                  <td><code>{{ p.reference }}</code></td>
+                  <td>{{ p.amount }} {{ p.currency }}</td>
+                  <td><span class="badge text-bg-{% if p.status == 'success' %}success{% elif p.status == 'pending' %}warning{% else %}secondary{% endif %}">{{ p.status }}</span></td>
+                  <td>{{ p.created_at|date:"Y-m-d H:i" }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <p class="text-muted mb-0">No payments yet.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

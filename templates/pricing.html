@@ -1,0 +1,203 @@
+{% extends 'base.html' %}{% load static %}{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="{% static 'css/pricing.css' %}">
+<div class="pricing-body">
+  <div class="pricing-wrapper">
+    <header class="pricing-header">
+      <h1>Service Pricing</h1>
+      <p class="subtitle">Choose the perfect plan for your needs</p>
+    </header>
+
+    <div class="currency-toggle">
+      <div class="toggle-container">
+        <div class="toggle-option active" id="naira-toggle">Naira (₦)</div>
+        <div class="toggle-option" id="usd-toggle" {% if not USD_ENABLED %}style="display:none"{% endif %}>USD ($)</div>
+      </div>
+    </div>
+
+    <div class="pricing-section">
+      <h2 class="section-title"><i class="fas fa-file-alt"></i>Per-Page Service Pricing</h2>
+      <div class="pricing-container">
+        <div class="pricing-card">
+          <div class="card-header">
+            <h3 class="plan-name">Trial</h3>
+            <p class="page-count">1–3 pages</p>
+            <div class="plan-price"><span class="currency naira-currency">₦</span><span class="price naira-price">2,000</span><span class="currency usd-currency" style="display: none;">$</span><span class="price usd-price" style="display: none;">10</span></div>
+            <div class="select-plan"><label><input type="radio" name="plan" value="trial" data-price-ngn="2000" data-price-usd="10"> Select this plan</label></div>
+          </div>
+          <div class="card-body">
+            <ul class="features-list">
+              <li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Auto-OCR only</span></li>
+              <li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Basic chat</span></li>
+            </ul>
+            <button class="cta-button" type="button">Get Started</button>
+          </div>
+        </div>
+
+        <div class="pricing-card">
+          <div class="card-header">
+            <h3 class="plan-name">Starter</h3>
+            <p class="page-count">≤ 60 pages</p>
+            <div class="plan-price"><span class="currency naira-currency">₦</span><span class="price naira-price">9,000</span><span class="currency usd-currency" style="display: none;">$</span><span class="price usd-price" style="display: none;">29</span></div>
+            <div class="select-plan"><label><input type="radio" name="plan" value="starter" data-price-ngn="9000" data-price-usd="29"> Select this plan</label></div>
+          </div>
+          <div class="card-body">
+            <ul class="features-list">
+              <div class="feature-category">Core Features</div>
+              <li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Full OCR clean</span></li>
+              <li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Hallucination-proof agent</span></li>
+              <div class="feature-category">Advanced Features</div>
+              <li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Manual data extraction</span></li>
+              <li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Training</span></li>
+              <li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>GIGA mode</span></li>
+              <li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Intelligent Student Mode</span></li>
+              <li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Research Student Mode</span></li>
+            </ul>
+            <button class="cta-button" type="button">Choose Plan</button>
+          </div>
+        </div>
+
+        <div class="pricing-card featured">
+          <div class="card-header">
+            <h3 class="plan-name">Standard</h3>
+            <p class="page-count">61–120 pages</p>
+            <div class="plan-price"><span class="currency naira-currency">₦</span><span class="price naira-price">14,500</span><span class="currency usd-currency" style="display: none;">$</span><span class="price usd-price" style="display: none;">49</span></div>
+            <div class="select-plan"><label><input type="radio" name="plan" value="standard" data-price-ngn="14500" data-price-usd="49"> Select this plan</label></div>
+          </div>
+          <div class="card-body">
+            <ul class="features-list">
+              <div class="feature-category">Core Features</div>
+              <li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Full OCR clean</span></li>
+              <li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Hallucination-proof agent</span></li>
+              <div class="feature-category">Advanced Features</div>
+              <li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Manual data extraction</span></li>
+              <li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Training</span></li>
+              <li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>GIGA mode</span></li>
+              <li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Intelligent Student Mode</span></li>
+              <li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Research Student Mode</span></li>
+            </ul>
+            <button class="cta-button" type="button">Choose Plan</button>
+          </div>
+        </div>
+
+        <div class="pricing-card">
+          <div class="card-header">
+            <h3 class="plan-name">Extended</h3>
+            <p class="page-count">121–200 pages</p>
+            <div class="plan-price"><span class="currency naira-currency">₦</span><span class="price naira-price">19,000</span><span class="currency usd-currency" style="display: none;">$</span><span class="price usd-price" style="display: none;">69</span></div>
+            <div class="select-plan"><label><input type="radio" name="plan" value="extended" data-price-ngn="19000" data-price-usd="69"> Select this plan</label></div>
+          </div>
+          <div class="card-body">
+            <ul class="features-list">
+              <div class="feature-category">Core Features</div>
+              <li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Full OCR clean</span></li>
+              <li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Hallucination-proof agent</span></li>
+              <div class="feature-category">Advanced Features</div>
+              <li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Manual data extraction</span></li>
+              <li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Training</span></li>
+              <li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>GIGA mode</span></li>
+              <li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Intelligent Student Mode</span></li>
+              <li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Research Student Mode</span></li>
+            </ul>
+            <button class="cta-button" type="button">Choose Plan</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="addon-card">
+        <div class="addon-title"><i class="fas fa-bolt"></i>Express add-on</div>
+        <p class="addon-description">4-hour delivery instead of 24h (can be added to any tier)</p>
+        <div class="addon-price">
+          <div>
+            <span class="currency naira-currency">₦</span>
+            <span class="price naira-price">2,000</span>
+            <span class="currency usd-currency" style="display: none;">$</span>
+            <span class="price usd-price" style="display: none;">10</span>
+          </div>
+          <label><input type="checkbox" id="express_addon" data-price-ngn="2000" data-price-usd="10"> Add</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="pricing-section">
+      <h2 class="section-title"><i class="fas fa-graduation-cap"></i>Per-Course Service Pricing</h2>
+      <div class="pricing-container">
+        <div class="pricing-card">
+          <div class="card-header"><h3 class="plan-name">Single Course</h3><div class="plan-price"><span class="currency naira-currency">₦</span><span class="price naira-price">10,000</span><span class="currency usd-currency" style="display: none;">$</span><span class="price usd-price" style="display: none;">30</span></div><div class="select-plan"><label><input type="radio" name="plan" value="single-course" data-price-ngn="10000" data-price-usd="30"> Select this plan</label></div></div>
+          <div class="card-body"><ul class="features-list"><div class="feature-category">Core Features</div><li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>1 course chatbot delivery</span></li><div class="feature-category">Advanced Features</div><li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Manual data extraction</span></li><li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Training</span></li><li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>GIGA mode</span></li><li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Intelligent Student Mode</span></li><li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Research Student Mode</span></li></ul><button class="cta-button" type="button">Get Started</button></div>
+        </div>
+        <div class="pricing-card featured">
+          <div class="card-header"><h3 class="plan-name">Bundle (6 courses)</h3><div class="bundle-badge">Save more</div><div class="plan-price"><span class="currency naira-currency">₦</span><span class="price naira-price">50,000</span><span class="currency usd-currency" style="display: none;">$</span><span class="price usd-price" style="display: none;">160</span></div><div class="select-plan"><label><input type="radio" name="plan" value="bundle-6" data-price-ngn="50000" data-price-usd="160"> Select this plan</label></div></div>
+          <div class="card-body"><ul class="features-list"><div class="feature-category">Core Features</div><li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Full 6-course chatbot bundle</span></li><div class="feature-category">Advanced Features</div><li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Manual data extraction</span></li><li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Training</span></li><li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>GIGA mode</span></li><li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Intelligent Student Mode</span></li><li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Research Student Mode</span></li></ul><p class="savings-text">Save ₦10,000 / $20 compared to individual courses</p><button class="cta-button" type="button">Choose Bundle</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="total-bar" style="position: sticky; bottom: 0; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,.1); border-radius: 12px; padding: 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+      <div><strong>Total:</strong> <span id="total-currency">₦</span><span id="total-amount">0</span></div>
+      <button id="checkoutBtn" class="cta-button" type="button" style="max-width: 240px;">Checkout with Paystack</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const isAuthenticated = {{ request.user.is_authenticated|yesno:'true,false' }};
+  let currentCurrency = 'NGN';
+  const USD_ENABLED = {{ USD_ENABLED|yesno:'true,false' }};
+  const nairaToggle = document.getElementById('naira-toggle');
+  const usdToggle = document.getElementById('usd-toggle');
+  const nairaPrices = document.querySelectorAll('.naira-price');
+  const nairaCurrencies = document.querySelectorAll('.naira-currency');
+  const usdPrices = document.querySelectorAll('.usd-price');
+  const usdCurrencies = document.querySelectorAll('.usd-currency');
+  function showNGN(){ currentCurrency='NGN'; nairaToggle.classList.add('active'); usdToggle.classList.remove('active'); nairaPrices.forEach(p=>p.style.display='inline'); nairaCurrencies.forEach(c=>c.style.display='inline'); usdPrices.forEach(p=>p.style.display='none'); usdCurrencies.forEach(c=>c.style.display='none'); updateTotal(); }
+  function showUSD(){ currentCurrency='USD'; usdToggle.classList.add('active'); nairaToggle.classList.remove('active'); usdPrices.forEach(p=>p.style.display='inline'); usdCurrencies.forEach(c=>c.style.display='inline'); nairaPrices.forEach(p=>p.style.display='none'); nairaCurrencies.forEach(c=>c.style.display='none'); updateTotal(); }
+  nairaToggle.addEventListener('click', showNGN);
+  if(USD_ENABLED && usdToggle){ usdToggle.addEventListener('click', showUSD); }
+  try {
+    const langs = navigator.languages || [navigator.language];
+    if(langs && langs.some(l=>/-NG$/i.test(l))) showNGN();
+    else if(USD_ENABLED) showUSD();
+    else showNGN();
+  } catch(e){ showNGN(); }
+
+  function selectedPlanPrice(){ const checked = document.querySelector('input[name="plan"]:checked'); if(!checked) return 0; const attr = currentCurrency==='NGN' ? 'data-price-ngn' : 'data-price-usd'; return Number(checked.getAttribute(attr) || 0); }
+  function selectedPlan(){ const checked = document.querySelector('input[name="plan"]:checked'); return checked ? checked.value : null; }
+  function expressAddonPrice(){ const el = document.getElementById('express_addon'); if(!el || !el.checked) return 0; return Number(el.getAttribute(currentCurrency==='NGN'?'data-price-ngn':'data-price-usd') || 0); }
+  function isExpress(){ const el = document.getElementById('express_addon'); return !!(el && el.checked); }
+  function fmt(n){ return currentCurrency==='NGN' ? n.toLocaleString('en-NG') : n.toLocaleString('en-US'); }
+  function updateTotal(){ const total = selectedPlanPrice() + expressAddonPrice(); document.getElementById('total-currency').textContent = currentCurrency==='NGN' ? '₦' : '$'; document.getElementById('total-amount').textContent = fmt(total); }
+  document.querySelectorAll('input[name="plan"]').forEach(r=>r.addEventListener('change', updateTotal));
+  const expressBox = document.getElementById('express_addon'); if(expressBox){ expressBox.addEventListener('change', updateTotal); }
+  updateTotal();
+
+  function getCookie(name){ const v = `; ${document.cookie}`.split(`; ${name}=`); if(v.length===2) return v.pop().split(';').shift(); }
+  async function checkout(){
+    if(!isAuthenticated){ window.location.href = '/login/?next=/pricing/'; return; }
+    const amount = selectedPlanPrice() + expressAddonPrice();
+    const plan = selectedPlan();
+    const express = isExpress();
+    if(!amount || !plan){ alert('Please select a plan.'); return; }
+    try {
+      const resp = await fetch('/api/payments/init/', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+        body: JSON.stringify({ amount: amount, currency: currentCurrency, plan: plan, express: express })
+      });
+      const text = await resp.text();
+      let data = {};
+      try { data = text ? JSON.parse(text) : {}; } catch(_) { data = { detail: text }; }
+      if(!resp.ok){
+        alert(data.detail || (data.paystack && (data.paystack.message || data.paystack.status || data.paystack.error)) || 'Failed to initialize payment');
+        return;
+      }
+      if(data.authorization_url){ window.location.href = data.authorization_url; } else { alert('Could not get payment URL.'); }
+    } catch(err){ alert('Payment init failed.'); }
+  }
+  document.getElementById('checkoutBtn').addEventListener('click', checkout);
+
+  document.querySelectorAll('.cta-button').forEach(btn=>btn.addEventListener('click', ()=>{ const radio = btn.closest('.pricing-card').querySelector('input[name="plan"]'); if(radio){ radio.checked = true; updateTotal(); } }));
+</script>
+{% endblock %}
+
