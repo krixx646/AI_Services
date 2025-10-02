@@ -16,10 +16,51 @@
     <a class="btn btn-outline-primary" href="/profile/">Edit Profile</a>
   </div>
 
+  {% if request.GET.status == 'success' or payments %}
+  <div class="alert alert-info border-0 shadow-sm mb-4" style="background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); color: white;">
+    <div class="row align-items-center">
+      <div class="col-md-8">
+        <h4 class="alert-heading mb-2"><i class="bi bi-whatsapp me-2"></i>Next Step: Send Us Your Notes</h4>
+        <p class="mb-2">To activate your AI agent, please send us:</p>
+        <ul class="mb-2">
+          <li><strong>Your payment receipt</strong> (screenshot or PDF)</li>
+          <li><strong>Your lecture notes</strong> (photos, PDFs, or any format)</li>
+          <li><strong>Your payment reference:</strong> <code class="bg-white text-dark px-2 py-1 rounded">{{ payments.0.reference|default:"Check table below" }}</code></li>
+        </ul>
+        <p class="mb-0 small">We'll process your notes and have your personalized AI agent ready within 24-48 hours (or 4 hours for express).</p>
+      </div>
+      <div class="col-md-4 text-center mt-3 mt-md-0">
+        <a class="btn btn-light btn-lg px-4 shadow" href="#" id="dashboardWhatsAppBtn">
+          <i class="bi bi-whatsapp me-2"></i>Send via WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
+  
+  <div class="alert alert-light border shadow-sm mb-4">
+    <div class="d-flex">
+      <div class="me-3">
+        <i class="bi bi-info-circle-fill text-primary" style="font-size: 1.5rem;"></i>
+      </div>
+      <div>
+        <h5 class="alert-heading mb-2">What Happens Next?</h5>
+        <p class="mb-2">After uploading your notes via WhatsApp:</p>
+        <ol class="mb-2">
+          <li>Our team will process and verify your lecture materials</li>
+          <li>We'll build your personalized AI agent (24-48 hours standard, 4 hours express)</li>
+          <li><strong>Check this dashboard regularly</strong> - your agent link will appear in the "My Agents" table below</li>
+          <li>You'll also receive an email notification when your agent is ready</li>
+        </ol>
+        <p class="mb-0 text-muted small"><i class="bi bi-clock me-1"></i>Processing times: Standard delivery (24-48 hours) | Express delivery (4 hours)</p>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
   <div class="row g-4">
     <div class="col-lg-7">
       <div class="card h-100">
-        <div class="card-header">My Bots</div>
+        <div class="card-header">My Agents</div>
         <div class="card-body">
           {% if bots %}
           <div class="table-responsive">
@@ -38,7 +79,7 @@
             </table>
           </div>
           {% else %}
-          <p class="text-muted mb-0">No bots yet. Start a new order when pricing is ready.</p>
+          <p class="text-muted mb-0">No agents yet. Start a new order when pricing is ready.</p>
           {% endif %}
         </div>
       </div>
@@ -50,7 +91,7 @@
           {% if payments %}
           <div class="table-responsive">
             <table class="table align-middle">
-              <thead><tr><th>Reference</th><th>Amount</th><th>Status</th><th>When</th></tr></thead>
+              <thead><tr><th>Reference</th><th>Amount</th><th>Status</th><th>When</th><th>Agent</th><th></th></tr></thead>
               <tbody>
                 {% for p in payments %}
                 <tr>
@@ -58,6 +99,18 @@
                   <td>{{ p.amount }} {{ p.currency }}</td>
                   <td><span class="badge text-bg-{% if p.status == 'success' %}success{% elif p.status == 'pending' %}warning{% else %}secondary{% endif %}">{{ p.status }}</span></td>
                   <td>{{ p.created_at|date:"Y-m-d H:i" }}</td>
+                  <td>
+                    {% if p.bot_info %}
+                      <span class="badge text-bg-{% if p.bot_info.status == 'ready' %}success{% elif p.bot_info.status == 'processing' %}warning{% else %}secondary{% endif %}">{{ p.bot_info.status }}</span>
+                      {% if p.bot_info.url %}<a href="{{ p.bot_info.url }}" target="_blank" class="ms-1">Open</a>{% endif %}
+                    {% else %}
+                      <form method="post" action="/api/payments/force-link-bot/{{ p.reference }}/" style="display:inline;">
+                        {% csrf_token %}
+                        <button class="btn btn-sm btn-outline-primary" type="submit">Sync</button>
+                      </form>
+                    {% endif %}
+                  </td>
+                  <td><a class="btn btn-sm btn-outline-secondary" href="/api/payments/receipt/{{ p.reference }}/" target="_blank">Receipt</a></td>
                 </tr>
                 {% endfor %}
               </tbody>
@@ -71,5 +124,33 @@
     </div>
   </div>
 </div>
+
+<script>
+  (function() {
+    var btn = document.getElementById('dashboardWhatsAppBtn');
+    if (!btn) return;
+    
+    // WhatsApp number in international format without plus
+    var phone = '2349019927796';
+    
+    // Get the payment reference from the page
+    var refCode = '{{ payments.0.reference|default:"" }}';
+    var username = '{{ request.user.username|default:"" }}';
+    
+    var message = 'Hi, I just completed my payment for an AI agent.\n\n';
+    if (refCode) {
+      message += 'Payment Reference: ' + refCode + '\n';
+    }
+    if (username) {
+      message += 'Username: ' + username + '\n';
+    }
+    message += '\nI am ready to send:\n';
+    message += '1. My payment receipt\n';
+    message += '2. My lecture notes (please upload)';
+    
+    var text = encodeURIComponent(message);
+    btn.href = 'https://wa.me/' + phone + '?text=' + text;
+  })();
+</script>
 {% endblock %}
 

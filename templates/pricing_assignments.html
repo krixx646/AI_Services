@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<section class="section-on-brand position-relative d-flex align-items-center" style="min-height:120vh;background:#81776F;color:#FFFFFF;">
+  <!-- Decorative image anchors (replace src later) -->
+  <img src="{% static 'img/campus.png' %}" alt="Campus" class="position-absolute d-none d-md-block" style="top:8%;left:10%;width:260px;height:auto;">
+  <img src="{% static 'img/plan.png' %}" alt="Planning" class="position-absolute d-none d-md-block" style="top:4%;right:12%;width:300px;height:auto;">
+  <img src="{% static 'img/lesson.png' %}" alt="Lesson" class="position-absolute d-none d-md-block" style="bottom:7%;left:6%;width:260px;height:auto;">
+  <img src="{% static 'img/breakfast.png' %}" alt="Coffee" class="position-absolute d-none d-md-block" style="bottom:6%;right:6%;width:320px;height:auto;">
+  <!-- Additional images in same style, lower on the page -->
+  <img src="{% static 'img/info.png' %}" alt="Info" class="position-absolute d-none d-md-block" style="bottom:2%;left:28%;width:260px;height:auto;">
+  <img src="{% static 'img/cloud.png' %}" alt="Cloud" class="position-absolute d-none d-md-block" style="bottom:2%;right:28%;width:320px;height:auto;">
+  <!-- Numbered placeholder positions -->
+  <img src="{% static 'img/contact.png' %}" alt="Contact" class="position-absolute d-none d-md-block" style="top:38%;left:6%;width:240px;height:auto;">
+  <img src="{% static 'img/hurry.png' %}" alt="Hurry" class="position-absolute d-none d-md-block" style="top:4%;left:50%;transform:translateX(-50%);width:280px;height:auto;">
+  <img src="{% static 'img/pod.png' %}" alt="Pod" class="position-absolute d-none d-md-block" style="bottom:46%;right:6%;width:260px;height:auto;">
+  <div class="container text-center position-relative">
+    <div class="mb-4">
+      <img class="img-fluid" src="{% static 'img/chat.png' %}" alt="WhatsApp" width="180" height="180">
+    </div>
+    <h1 class="fw-bold mb-3">Let's Start Your A‑Grade Project Today</h1>
+    <p class="lead mb-4" style="opacity:.95">Chat with us on WhatsApp for a fast quote tailored to your exact brief.</p>
+    <a class="btn btn-success btn-lg px-4" href="#" id="waContactBtn">Contact Us for Your Project or Assignment</a>
+  </div>
+</section>
+<script>
+  (function() {
+    var btn = document.getElementById('waContactBtn');
+    if (!btn) return;
+    // WhatsApp number in international format without plus
+    var phone = '2349019927796';
+    var text = encodeURIComponent('Hi, I need help with a project/assignment.');
+    btn.href = 'https://wa.me/' + phone + '?text=' + text;
+  })();
+</script>
+{% endblock %}
+
+

@@ -29,4 +29,10 @@ class AccountsApiTests(TestCase):
         self.assertIn("access", r.data)
         self.assertIn("refresh", r.data)
 
+    def test_auth_required_for_payments(self):
+        # Unauthenticated should get 401 on payments init
+        client = APIClient()
+        r = client.post("/api/payments/init/", {"currency": "NGN", "plan": "trial"}, format="json")
+        self.assertEqual(r.status_code, 401)
+
 # Create your tests here.

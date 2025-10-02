@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="py-5 section-on-brand">
+  <div class="container text-center">
+    <h1 class="fw-bold mb-3">Verify your email</h1>
+    <p>We sent a verification link to <strong>{{ email }}</strong>. Please check your inbox (and spam folder) and click the link to activate your account.</p>
+    <a class="btn btn-light" href="/login/">Back to sign in</a>
+  </div>
+</section>
+{% endblock %}
+
+

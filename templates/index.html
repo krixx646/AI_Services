@@ -1,30 +1,363 @@
-{% extends 'base.html' %}{% block content %}
-<section class="py-5 text-center container">
-  <div class="row py-lg-5">
-    <div class="col-lg-8 col-md-10 mx-auto">
-      <h1 class="display-4 fw-bold">The future is collective</h1>
-      <p class="lead my-3">We turn your lecture notes into a verified, hallucination‑proof chatbot. Pay securely, we clean and extract Q&A, then ship a Botpress link.</p>
-      <p>
-        <a href="/api/docs/" class="btn btn-primary my-2">Get Started</a>
-        <a href="/blog/" class="btn btn-outline-secondary my-2">Learn More</a>
-      </p>
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<section class="hero-dark position-relative overflow-hidden py-5" style="background:#81776F;color:#fff;">
+  <div class="container">
+    <div class="row justify-content-center text-center py-5">
+      <div class="col-lg-9">
+        <h1 class="display-4 fw-bold mb-3">Your Lecture Notes, Transformed into Your Personal Exam-Crushing AI.</h1>
+        <p class="lead mb-4" style="opacity:.95">Stop studying harder. Start studying smarter. Send us your messy handwritten notes and get a flawless, hyper-accurate AI study buddy. It focuses only on what your lecturer taught—guaranteeing 100% exam-ready answers, zero guesswork, and a grade-boosting advantage.</p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+          <a class="btn btn-light btn-lg px-4" href="/pricing/">Create Your AceBot Now - Get an A+ or It's Free</a>
+          <a class="btn btn-outline-light btn-lg px-4" href="/api/demo/info/">See Live Demo →</a>
+          <a class="btn btn-outline-light btn-lg px-4" href="/blog/">See Blog</a>
+          <a class="btn btn-outline-light btn-lg px-4" href="/assignments/">We’ll Do Your Project & Assignment →</a>
+        </div>
+        <div class="d-flex justify-content-center gap-3 mt-4 small" style="opacity:.9">
+          <span>Secure checkout</span><span>•</span><span>NGN & USD</span><span>•</span><span>Express 4‑hour option</span>
+        </div>
+      </div>
     </div>
   </div>
-  </section>
+</section>
 
-<section class="container py-5">
-  <div class="row g-4">
-    <div class="col-md-6">
-      <div class="p-4 border rounded-3 h-100">
-        <h3 class="fw-semibold">Fiscal hosting</h3>
-        <p class="mb-0">Operate under a trusted umbrella. We handle payments, accounting, and transparent reporting while you focus on building your bot.</p>
+<section class="py-5 section-on-brand">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6 order-lg-1">
+        <img class="img-fluid" src="{% static 'img/chatbot.png' %}" alt="AI agent illustration">
+      </div>
+      <div class="col-lg-6 order-lg-2">
+        <h2 class="fw-bold">A Study Buddy That Actually Gets Your Class.</h2>
+        <p class="lead text-secondary mb-3">Forget ChatGPT's generic gibberish and dangerous hallucinations. Your AceBot is custom-built from your specific lectures. It’s like having the smartest person in class on speed dial—a person who never slept through a single lesson.</p>
+        <p class="mb-2"><strong>Zero Hallucinations, Total Accuracy:</strong> We manually extract and verify every concept from your notes. If it wasn't in your lecture, it won't be in the answer. 99.99% accuracy or your money back.</p>
+        <p class="mb-2"><strong>Study in Conversation, Not in Frustration:</strong> Ask questions in your own words. "Explain this like I'm 5," "Give me the key formulas for the midterm," "Summarize chapter 4." Get instant, precise answers. Ditch the bulky folders forever.</p>
+        <p class="mb-0"><strong>The End of Exam Panic:</strong> Walk into every test knowing you've mastered the exact material that will be covered. No surprises. Just pure, unshakable confidence.</p>
       </div>
     </div>
-    <div class="col-md-6">
-      <div class="p-4 border rounded-3 h-100">
-        <h3 class="fw-semibold">Shared account</h3>
-        <p class="mb-0">Collaborate with classmates and teams. Shared budgets make contributions and disbursements transparent end‑to‑end.</p>
+  </div>
+</section>
+
+<section class="py-5 section-on-brand">
+  <div class="container">
+    <div class="row g-5 align-items-center mb-5">
+      <div class="col-lg-6 order-lg-2">
+        <img class="img-fluid" src="{% static 'img/sketch-study-bot.png' %}" alt="Student studying with AI agent">
       </div>
+      <div class="col-lg-6 order-lg-1">
+        <h2 class="fw-bold">From Scribbled Notes to AI Genius in 3 Simple Steps.</h2>
+        <p class="text-secondary mb-2"><strong>Upload Your Notes.</strong> Snap pics of your handwritten pages, upload PDFs, or forward your lecture slides. We accept the mess.</p>
+        <p class="text-secondary mb-2"><strong>We Perform Our Human-Verified Magic.</strong> This is our secret sauce. Our team meticulously cleans up the text, corrects errors, and structures the knowledge. This manual touch is what makes us bulletproof where pure AI fails.</p>
+        <p class="text-secondary mb-0"><strong>Chat & Conquer.</strong> Receive your unique AceBot link. Start quizzing it instantly. It's live 24/7 on any device. Your notes have never been this accessible, or this powerful.</p>
+      </div>
+    </div>
+    <div class="row g-5 align-items-center mb-5">
+      <div class="col-lg-6">
+        <img class="img-fluid" src="{% static 'img/anxiety.png' %}" alt="Anxious student illustration">
+      </div>
+      <div class="col-lg-6">
+        <h2 class="fw-bold">Your Notes, On Demand. Never Forget a Word Again.</h2>
+        <p class="text-secondary">Speak to your notes like a best friend. Get instant, perfect answers. Ditch the boring rereading. Our human-verified AI eliminates hallucinations, so you always have exactly what your lecturer taught, right in your pocket. Studying transforms from a chore into an addictive, grade-boosting conversation.</p>
+        <p class="mb-2">Ask for anything:</p>
+        <ul class="text-secondary mb-2">
+          <li>“Summarize this in 3 bullet points.”</li>
+          <li>“Quiz me on key formulas.”</li>
+          <li>“What are the 5 most likely exam questions?”</li>
+        </ul>
+        <p class="text-secondary mb-0">Get immediate, 100% accurate answers pulled directly from your notes. Reading is dead. Conversational learning is king.</p>
+      </div>
+    </div>
+    <div class="row g-5 align-items-center">
+      <div class="col-lg-6 order-lg-2">
+        <img class="img-fluid" src="{% static 'img/heavy.png' %}" alt="Heavy workload illustration">
+      </div>
+      <div class="col-lg-6 order-lg-1">
+        <h2 class="fw-bold">Your 10‑Pound Textbook, Now Weighs 0 Ounces.</h2>
+        <p class="text-secondary">Ditch the backpack full of chaos. Your entire semester’s notes—perfectly organized and instantly searchable—now live in your pocket.</p>
+        <p class="text-secondary">No more hauling heavy binders. No more frantic, pre-exam page-flipping. We transform your messy uploads into a sleek, genius-level AI that knows your subject backwards and forwards.</p>
+        <p class="mb-2">The Magic Happens in 3 Steps:</p>
+        <ol class="text-secondary mb-2">
+          <li>You Upload (PDF, photo, anything).</li>
+          <li>We Meticulously Clean & Structure every word (human-verified for 100% accuracy).</li>
+          <li>You Get a Private Bot Link—your notes, reincarnated as a tireless, on-demand expert.</li>
+        </ol>
+        <p class="text-secondary mb-0">Your content. Your knowledge. Finally set free.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5 section-on-brand">
+  <div class="container">
+    <div class="row g-5 align-items-center mb-5">
+      <div class="col-lg-6 order-lg-1">
+        <img class="img-fluid img-shift-left" src="{% static 'img/camera.png' %}" alt="Camera upload illustration">
+      </div>
+      <div class="col-lg-6 order-lg-2">
+        <h2 class="fw-bold">Camera, text, and image upload</h2>
+        <p class="text-secondary mb-2">See a Question? Snap It. Get the Exact Answer From Your Notes.</p>
+        <p class="text-secondary">Stop Googling and failing. That random internet junk has nothing to do with your lecture. Point your camera at any exam question, and your AI instantly scans your actual course materials to deliver the precise, lecturer-approved answer. No more confusion. Just cold, hard accuracy.</p>
+        <a class="btn btn-light" href="/pricing/">Activate Your Camera Superpower</a>
+      </div>
+    </div>
+
+    <div class="row g-5 align-items-center mb-5">
+      <div class="col-lg-6 order-lg-2">
+        <img class="img-fluid" src="{% static 'img/voice.png' %}" alt="Voice input illustration">
+      </div>
+      <div class="col-lg-6 order-lg-1">
+        <h2 class="fw-bold">Speak Your Way to an A: 3 Intelligence Modes for Every Lecturer's Personality</h2>
+        <p class="text-secondary">Finally, an AI that understands academic politics. Different lecturers demand different answering styles. We give you three secret weapons to ace any exam, any professor:</p>
+        <ul class="text-secondary mb-3">
+          <li class="mb-2"><strong>🎯 GIGA Mode: "Word-for-Word Accuracy"</strong><br>For strict lecturers who want exactly what they taught. Get verbatim answers straight from your materials. Perfect when they want their own words thrown back at them.</li>
+          <li class="mb-2"><strong>🧠 Intelligent Student Mode: "Explain Like You've Actually Studied"</strong><br>For professors who hate copy-paste answers. Get the same core concepts explained in fresh wording. Shows you truly understand the material, not just memorize it.</li>
+          <li class="mb-2"><strong>🚀 ITK Mode: "I Too Know - The Overachiever"</strong><br>For impressing lecturers who value extra research. Get your lecture notes PLUS additional context from verified sources. Makes you look like the most prepared student in class.</li>
+        </ul>
+        <p class="text-secondary">Any lecturer, any teaching style - we've got you covered 100%. Record your question, choose your mode, and watch the magic happen.</p>
+        <a class="btn btn-light" href="/pricing/">Unlock Your Strategic Advantage</a>
+      </div>
+    </div>
+    <div class="row g-4 align-items-center">
+      <div class="col-lg-6"><img class="img-fluid img-shift-left" src="{% static 'img/sureA.png' %}" alt="Satisfied student illustration"></div>
+      <div class="col-lg-6">
+        <h3 class="fw-bold">This Isn't Magic. It's Just What Top Students Do.</h3>
+        <p class="text-secondary">Join the thousands of students who stopped drowning in notes and started acing exams. Here’s our unfair advantage:</p>
+        <ul class="mt-3">
+          <li class="mb-2"><strong>🗣️ Converse, Don't Just Read:</strong> Talk to your notes like a friend. Get instant answers. Turn passive reading into an active, engaging dialogue.</li>
+          <li class="mb-2"><strong>🚫 Zero Hallucinations, 100% Lecture Truth:</strong> We manually ground every answer in your materials. No made-up facts. No dangerous guesses. Just pure, exam-safe accuracy.</li>
+          <li class="mb-2"><strong>💡 Never 'Forget' a Note Again:</strong> Your entire semester's knowledge—organized, searchable, and ready to recall in seconds. It’s a photographic memory for your notes.</li>
+          <li class="mb-2"><strong>⚡ Study Smarter, Not Longer:</strong> Get summaries, key points, and likely exam questions on demand. Reclaim hours of your time.</li>
+        </ul>
+        <a class="btn btn-primary" href="/pricing/">See Pricing</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5 border-top section-on-brand">
+  <div class="container text-center">
+    <h2 class="fw-bold mb-3">Ready to ship your first course agent?</h2>
+    <a class="btn btn-primary btn-lg" href="/pricing/">Get Started</a>
+  </div>
+ </section>
+ 
+ <!-- Trusted By carousel -->
+ <section class="py-5">
+   <div class="container trusted-by text-center">
+     <h2 class="fw-bold mb-2">Trusted By</h2>
+     <h3 class="h4 mb-2">The Secret Weapon of Students at Top Institutions.</h3>
+     <p class="subtitle mb-4">Join thousands of students from these schools who have already unlocked a smarter way to study and succeed.</p>
+    <div class="trusted-logos mb-3">
+      <img src="{% static 'img/s1.png' %}" alt="Institution 1" class="trusted-logo logo-s1" loading="eager"/>
+      <img src="{% static 'img/s2.png' %}" alt="Institution 2" class="trusted-logo logo-s2" loading="eager"/>
+      <img src="{% static 'img/s3.png' %}" alt="Institution 3" class="trusted-logo logo-s3" loading="eager"/>
+    </div>
+     <p class="text-white mb-3">🚀 95% of users report a significant grade improvement within one semester.</p>
+    <a class="btn btn-light" href="/pricing/">Join Them Now</a>
+   </div>
+ </section>
+
+<!-- Witness The Magic - Handwritten notes carousel (rebuilt) -->
+<section class="py-5 section-on-brand border-top" role="region" aria-label="Handwritten notes showcase">
+  <div class="container text-center">
+    <h2 class="fw-bold mb-2">Witness The Magic</h2>
+    <h3 class="h4 mb-3">From Chaotic Scribbles to Flawless AI. See It Live.</h3>
+    <p class="mb-4">This is our secret sauce in action. Below are real, handwritten notes we've transformed. Watch how we turn messy, personal shorthand into the clean, structured knowledge that powers a genius-level AI. Then, test the results for yourself with our live demo agent.</p>
+    <div id="notesCarousel" class="carousel slide carousel-fade notes-carousel mb-4" data-bs-ride="carousel" data-bs-interval="3000" data-bs-touch="true" data-bs-wrap="true" data-bs-pause="hover">
+      <div class="carousel-indicators">
+        <button type="button" data-bs-target="#notesCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#notesCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#notesCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        <button type="button" data-bs-target="#notesCarousel" data-bs-slide-to="3" aria-label="Slide 4"></button>
+        <button type="button" data-bs-target="#notesCarousel" data-bs-slide-to="4" aria-label="Slide 5"></button>
+        <button type="button" data-bs-target="#notesCarousel" data-bs-slide-to="5" aria-label="Slide 6"></button>
+        <button type="button" data-bs-target="#notesCarousel" data-bs-slide-to="6" aria-label="Slide 7"></button>
+        <button type="button" data-bs-target="#notesCarousel" data-bs-slide-to="7" aria-label="Slide 8"></button>
+        <button type="button" data-bs-target="#notesCarousel" data-bs-slide-to="8" aria-label="Slide 9"></button>
+        <button type="button" data-bs-target="#notesCarousel" data-bs-slide-to="9" aria-label="Slide 10"></button>
+        <button type="button" data-bs-target="#notesCarousel" data-bs-slide-to="10" aria-label="Slide 11"></button>
+        <button type="button" data-bs-target="#notesCarousel" data-bs-slide-to="11" aria-label="Slide 12"></button>
+        <button type="button" data-bs-target="#notesCarousel" data-bs-slide-to="12" aria-label="Slide 13"></button>
+        <button type="button" data-bs-target="#notesCarousel" data-bs-slide-to="13" aria-label="Slide 14"></button>
+      </div>
+      <div class="carousel-inner">
+        <div class="carousel-item active"><img src="{% static 'img/h1.jpg' %}" alt="Handwritten note 1" class="d-block mx-auto" loading="eager"/></div>
+        <div class="carousel-item"><img src="{% static 'img/h2.jpg' %}" alt="Handwritten note 2" class="d-block mx-auto" loading="lazy"/></div>
+        <div class="carousel-item"><img src="{% static 'img/h3.jpg' %}" alt="Handwritten note 3" class="d-block mx-auto" loading="lazy"/></div>
+        <div class="carousel-item"><img src="{% static 'img/h4.jpg' %}" alt="Handwritten note 4" class="d-block mx-auto" loading="lazy"/></div>
+        <div class="carousel-item"><img src="{% static 'img/h5.jpg' %}" alt="Handwritten note 5" class="d-block mx-auto" loading="lazy"/></div>
+        <div class="carousel-item"><img src="{% static 'img/h6.jpg' %}" alt="Handwritten note 6" class="d-block mx-auto" loading="lazy"/></div>
+        <div class="carousel-item"><img src="{% static 'img/h7.jpg' %}" alt="Handwritten note 7" class="d-block mx-auto" loading="lazy"/></div>
+        <div class="carousel-item"><img src="{% static 'img/h8.jpg' %}" alt="Handwritten note 8" class="d-block mx-auto" loading="lazy"/></div>
+        <div class="carousel-item"><img src="{% static 'img/h9.jpg' %}" alt="Handwritten note 9" class="d-block mx-auto" loading="lazy"/></div>
+        <div class="carousel-item"><img src="{% static 'img/h10.jpg' %}" alt="Handwritten note 10" class="d-block mx-auto" loading="lazy"/></div>
+        <div class="carousel-item"><img src="{% static 'img/h11.jpg' %}" alt="Handwritten note 11" class="d-block mx-auto" loading="lazy"/></div>
+        <div class="carousel-item"><img src="{% static 'img/h12.jpg' %}" alt="Handwritten note 12" class="d-block mx-auto" loading="lazy"/></div>
+        <div class="carousel-item"><img src="{% static 'img/h13.jpg' %}" alt="Handwritten note 13" class="d-block mx-auto" loading="lazy"/></div>
+        <div class="carousel-item"><img src="{% static 'img/h14.jpg' %}" alt="Handwritten note 14" class="d-block mx-auto" loading="lazy"/></div>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#notesCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#notesCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+    <a class="btn btn-light" href="/api/demo/info/">Try the Demo Agent Trained on These Notes</a>
+  </div>
+</section>
+
+<section class="py-5 section-on-brand border-top">
+  <div class="container">
+    <h2 class="fw-bold mb-4 text-center">OUR REVIEWS:</h2>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-4">
+        <div class="h-100 p-3 border border-light rounded-3 bg-transparent">
+          <div class="mb-2" aria-label="5 out of 5 stars">
+            <i class="bi bi-star-fill text-warning"></i>
+            <i class="bi bi-star-fill text-warning"></i>
+            <i class="bi bi-star-fill text-warning"></i>
+            <i class="bi bi-star-fill text-warning"></i>
+            <i class="bi bi-star-fill text-warning"></i>
+          </div>
+          <p class="mb-2 fst-italic">"Used it for my Thermodynamics finals. The agent gave me exactly what was in my lecturer's slides, word-for-word. No more, no less. Saved my grade."</p>
+          <div class="small text-white-50">Uchenna N. (Engineering)</div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="h-100 p-3 border border-light rounded-3 bg-transparent">
+          <div class="mb-2" aria-label="4 out of 5 stars">
+            <i class="bi bi-star-fill text-warning"></i>
+            <i class="bi bi-star-fill text-warning"></i>
+            <i class="bi bi-star-fill text-warning"></i>
+            <i class="bi bi-star-fill text-warning"></i>
+            <i class="bi bi-star text-warning"></i>
+          </div>
+          <p class="mb-2 fst-italic">"Summarizing lengthy cases into bullet points was a game-changer. It felt like I had a personal tutor who never gets tired. My revision time was cut in half."</p>
+          <div class="small text-white-50">Yetunde A. (Law)</div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="h-100 p-3 border border-light rounded-3 bg-transparent">
+          <div class="mb-2" aria-label="5 out of 5 stars">
+            <i class="bi bi-star-fill text-warning"></i>
+            <i class="bi bi-star-fill text-warning"></i>
+            <i class="bi bi-star-fill text-warning"></i>
+            <i class="bi bi-star-fill text-warning"></i>
+            <i class="bi bi-star-fill text-warning"></i>
+          </div>
+          <p class="mb-2 fst-italic">"The accuracy is shocking. I asked a complex question about a theory, and the answer was so precise it even included the specific examples my professor used in class. 100% reliable."</p>
+          <div class="small text-white-50">Musa D. (Political Science)</div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="h-100 p-3 border border-light rounded-3 bg-transparent">
+          <div class="mb-2" aria-label="5 out of 5 stars">
+            <i class="bi bi-star-fill text-warning"></i>
+            <i class="bi bi-star-fill text-warning"></i>
+            <i class="bi bi-star-fill text-warning"></i>
+            <i class="bi bi-star-fill text-warning"></i>
+            <i class="bi bi-star-fill text-warning"></i>
+          </div>
+          <p class="mb-2 fst-italic">"Trying to memorize drug interactions is a nightmare. This agent let me quiz myself repeatedly until it stuck. It's the only reason I passed my pharmacology exam."</p>
+          <div class="small text-white-50">Ngozi E. (Medicine)</div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="h-100 p-3 border border-light rounded-3 bg-transparent">
+          <div class="mb-2" aria-label="5 out of 5 stars">
+            <i class="bi bi-star-fill text-warning"></i>
+            <i class="bi bi-star-fill text-warning"></i>
+            <i class="bi bi-star-fill text-warning"></i>
+            <i class="bi bi-star-fill text-warning"></i>
+            <i class="bi bi-star-fill text-warning"></i>
+          </div>
+          <p class="mb-2 fst-italic">"I sent messy notes from a guest lecture. The agent cleaned it all up and could explain the core concepts back to me. It's like it reads my mind."</p>
+          <div class="small text-white-50">Ayodele O. (Business)</div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="h-100 p-3 border border-light rounded-3 bg-transparent">
+          <div class="mb-2" aria-label="5 out of 5 stars">
+            <i class="bi bi-star-fill text-warning"></i>
+            <i class="bi bi-star-fill text-warning"></i>
+            <i class="bi bi-star-fill text-warning"></i>
+            <i class="bi bi-star-fill text-warning"></i>
+            <i class="bi bi-star-fill text-warning"></i>
+          </div>
+          <p class="mb-2 fst-italic">"For project research, the 'ITK Mode' was incredible. It gave me the base from my notes and added the latest industry context. My lecturer was impressed."</p>
+          <div class="small text-white-50">Aisha Y. (Mass Communication)</div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="h-100 p-3 border border-light rounded-3 bg-transparent">
+          <div class="mb-2" aria-label="5 out of 5 stars">
+            <i class="bi bi-star-fill text-warning"></i>
+            <i class="bi bi-star-fill text-warning"></i>
+            <i class="bi bi-star-fill text-warning"></i>
+            <i class="bi bi-star-fill text-warning"></i>
+            <i class="bi bi-star-fill text-warning"></i>
+          </div>
+          <p class="mb-2 fst-italic">"Finally, an AI that doesn't hallucinate code syntax. It pulled the correct algorithms directly from our class materials. A must-have for any coding student."</p>
+          <div class="small text-white-50">Kelechi O. (Computer Science)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5 section-on-brand border-top">
+  <div class="container">
+    <h2 class="fw-bold mb-2 text-center">How It Works: From Payment to Your AI Agent</h2>
+    <p class="text-center text-white-50 mb-5">Simple, fast, and transparent. Here's your complete journey to exam success.</p>
+    
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3">
+        <div class="text-center h-100 p-4 border border-light rounded-3 bg-transparent">
+          <div class="mb-3">
+            <div class="bg-light text-dark rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px; font-size: 1.5rem; font-weight: bold;">1</div>
+          </div>
+          <h5 class="fw-bold mb-3">Choose Your Plan</h5>
+          <p class="mb-0 text-white-50">Select the package that fits your needs. Single course or full semester bundle. Pay securely via Paystack (NGN or USD accepted).</p>
+        </div>
+      </div>
+      
+      <div class="col-md-6 col-lg-3">
+        <div class="text-center h-100 p-4 border border-light rounded-3 bg-transparent">
+          <div class="mb-3">
+            <div class="bg-light text-dark rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px; font-size: 1.5rem; font-weight: bold;">2</div>
+          </div>
+          <h5 class="fw-bold mb-3">Upload Your Materials</h5>
+          <p class="mb-0 text-white-50">After payment, send us your lecture notes via WhatsApp. Photos, PDFs, scans—we accept any format. Include your payment receipt and reference number.</p>
+        </div>
+      </div>
+      
+      <div class="col-md-6 col-lg-3">
+        <div class="text-center h-100 p-4 border border-light rounded-3 bg-transparent">
+          <div class="mb-3">
+            <div class="bg-light text-dark rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px; font-size: 1.5rem; font-weight: bold;">3</div>
+          </div>
+          <h5 class="fw-bold mb-3">We Build Your Agent</h5>
+          <p class="mb-0 text-white-50">Our team manually extracts, verifies, and structures your content. Human-verified accuracy ensures zero hallucinations. Standard: 24-48 hours. Express: 4 hours.</p>
+        </div>
+      </div>
+      
+      <div class="col-md-6 col-lg-3">
+        <div class="text-center h-100 p-4 border border-light rounded-3 bg-transparent">
+          <div class="mb-3">
+            <div class="bg-light text-dark rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px; font-size: 1.5rem; font-weight: bold;">4</div>
+          </div>
+          <h5 class="fw-bold mb-3">Start Acing Exams</h5>
+          <p class="mb-0 text-white-50">Get your unique agent link via email and dashboard. Access 24/7 on any device. Chat, quiz, and conquer your exams with 100% lecture-accurate answers.</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="text-center mt-5">
+      <p class="lead mb-3">Ready to transform your study game?</p>
+      <a class="btn btn-light btn-lg px-4" href="/pricing/">Get Started Now</a>
     </div>
   </div>
 </section>

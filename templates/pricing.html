@@ -2,7 +2,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="{% static 'css/pricing.css' %}">
-<div class="pricing-body">
+<div class="pricing-body" style="color:#1f1f1f;">
   <div class="pricing-wrapper">
     <header class="pricing-header">
       <h1>Service Pricing</h1>
@@ -11,13 +11,27 @@
 
     <div class="currency-toggle">
       <div class="toggle-container">
-        <div class="toggle-option active" id="naira-toggle">Naira (₦)</div>
-        <div class="toggle-option" id="usd-toggle" {% if not USD_ENABLED %}style="display:none"{% endif %}>USD ($)</div>
+        <div class="toggle-option{% if GATED_CURRENCY == 'NGN' %} active{% endif %}" id="naira-toggle" {% if not SHOW_NGN %}style="display:none"{% endif %}>Naira (₦)</div>
+        <div class="toggle-option{% if GATED_CURRENCY == 'USD' %} active{% endif %}" id="usd-toggle" {% if not SHOW_USD %}style="display:none"{% endif %}>USD ($)</div>
       </div>
     </div>
 
     <div class="pricing-section">
       <h2 class="section-title"><i class="fas fa-file-alt"></i>Per-Page Service Pricing</h2>
+      <div class="mb-3">
+        <label class="form-label">Preferred AI model</label>
+        <div class="d-flex gap-3 flex-wrap">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="ai_model" value="gpt-5" id="model_gpt5" checked>
+            <label class="form-check-label" for="model_gpt5">GPT-5</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="ai_model" value="gemini-2.5-flash" id="model_gemini">
+            <label class="form-check-label" for="model_gemini">Gemini 2.5 Flash</label>
+          </div>
+        </div>
+        <div class="form-text">Choose one; defaults to GPT‑5 if none selected.</div>
+      </div>
       <div class="pricing-container">
         <div class="pricing-card">
           <div class="card-header">
@@ -39,8 +53,8 @@
           <div class="card-header">
             <h3 class="plan-name">Starter</h3>
             <p class="page-count">≤ 60 pages</p>
-            <div class="plan-price"><span class="currency naira-currency">₦</span><span class="price naira-price">9,000</span><span class="currency usd-currency" style="display: none;">$</span><span class="price usd-price" style="display: none;">29</span></div>
-            <div class="select-plan"><label><input type="radio" name="plan" value="starter" data-price-ngn="9000" data-price-usd="29"> Select this plan</label></div>
+            <div class="plan-price"><span class="currency naira-currency">₦</span><span class="price naira-price">10,000</span><span class="currency usd-currency" style="display: none;">$</span><span class="price usd-price" style="display: none;">29</span></div>
+            <div class="select-plan"><label><input type="radio" name="plan" value="starter" data-price-ngn="10000" data-price-usd="29"> Select this plan</label></div>
           </div>
           <div class="card-body">
             <ul class="features-list">
@@ -62,8 +76,8 @@
           <div class="card-header">
             <h3 class="plan-name">Standard</h3>
             <p class="page-count">61–120 pages</p>
-            <div class="plan-price"><span class="currency naira-currency">₦</span><span class="price naira-price">14,500</span><span class="currency usd-currency" style="display: none;">$</span><span class="price usd-price" style="display: none;">49</span></div>
-            <div class="select-plan"><label><input type="radio" name="plan" value="standard" data-price-ngn="14500" data-price-usd="49"> Select this plan</label></div>
+            <div class="plan-price"><span class="currency naira-currency">₦</span><span class="price naira-price">14,999</span><span class="currency usd-currency" style="display: none;">$</span><span class="price usd-price" style="display: none;">49</span></div>
+            <div class="select-plan"><label><input type="radio" name="plan" value="standard" data-price-ngn="14999" data-price-usd="49"> Select this plan</label></div>
           </div>
           <div class="card-body">
             <ul class="features-list">
@@ -123,9 +137,9 @@
     <div class="pricing-section">
       <h2 class="section-title"><i class="fas fa-graduation-cap"></i>Per-Course Service Pricing</h2>
       <div class="pricing-container">
-        <div class="pricing-card">
-          <div class="card-header"><h3 class="plan-name">Single Course</h3><div class="plan-price"><span class="currency naira-currency">₦</span><span class="price naira-price">10,000</span><span class="currency usd-currency" style="display: none;">$</span><span class="price usd-price" style="display: none;">30</span></div><div class="select-plan"><label><input type="radio" name="plan" value="single-course" data-price-ngn="10000" data-price-usd="30"> Select this plan</label></div></div>
-          <div class="card-body"><ul class="features-list"><div class="feature-category">Core Features</div><li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>1 course chatbot delivery</span></li><div class="feature-category">Advanced Features</div><li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Manual data extraction</span></li><li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Training</span></li><li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>GIGA mode</span></li><li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Intelligent Student Mode</span></li><li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Research Student Mode</span></li></ul><button class="cta-button" type="button">Get Started</button></div>
+        <div class="pricing-card pricing-card-wide">
+          <div class="card-header"><h3 class="plan-name">Single Course</h3><div class="plan-price"><span class="currency naira-currency">₦</span><span class="price naira-price">10,000</span><span class="currency usd-currency" style="display: none;">$</span><span class="price usd-price" style="display: none;">30</span></div><div class="select-plan"><label><input type="radio" name="plan" value="single-course" data-price-ngn="10000" data-price-usd="30"> Select this plan <span class="text-muted">(set quantity below)</span></label></div></div>
+          <div class="card-body"><div class="d-flex align-items-center mb-3 p-2 rounded border" id="singleCourseQtyWrap"><span class="badge text-bg-warning me-2">Set quantity</span><div class="input-group flex-nowrap" style="width: 200px;"><button class="btn btn-outline-secondary" type="button" id="sc_dec">-</button><input type="number" class="form-control text-center" id="single_course_qty" value="1" min="1" max="20" style="width: 80px; max-width: 100px;" aria-label="Quantity"><button class="btn btn-outline-secondary" type="button" id="sc_inc">+</button></div></div><ul class="features-list"><div class="feature-category">Core Features</div><li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>1 course chatbot delivery</span></li><div class="feature-category">Advanced Features</div><li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Manual data extraction</span></li><li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Training</span></li><li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>GIGA mode</span></li><li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Intelligent Student Mode</span></li><li class="feature-item"><i class="fas fa-check-circle feature-icon"></i><span>Research Student Mode</span></li></ul><button class="cta-button" type="button">Get Started</button></div>
         </div>
         <div class="pricing-card featured">
           <div class="card-header"><h3 class="plan-name">Bundle (6 courses)</h3><div class="bundle-badge">Save more</div><div class="plan-price"><span class="currency naira-currency">₦</span><span class="price naira-price">50,000</span><span class="currency usd-currency" style="display: none;">$</span><span class="price usd-price" style="display: none;">160</span></div><div class="select-plan"><label><input type="radio" name="plan" value="bundle-6" data-price-ngn="50000" data-price-usd="160"> Select this plan</label></div></div>
@@ -142,9 +156,8 @@
 </div>
 
 <script>
-  const isAuthenticated = {{ request.user.is_authenticated|yesno:'true,false' }};
-  let currentCurrency = 'NGN';
-  const USD_ENABLED = {{ USD_ENABLED|yesno:'true,false' }};
+  const isAuthenticated = "{{ request.user.is_authenticated|yesno:'true,false' }}" === "true";
+  let currentCurrency = '{{ GATED_CURRENCY|default:"NGN" }}';
   const nairaToggle = document.getElementById('naira-toggle');
   const usdToggle = document.getElementById('usd-toggle');
   const nairaPrices = document.querySelectorAll('.naira-price');
@@ -153,23 +166,27 @@
   const usdCurrencies = document.querySelectorAll('.usd-currency');
   function showNGN(){ currentCurrency='NGN'; nairaToggle.classList.add('active'); usdToggle.classList.remove('active'); nairaPrices.forEach(p=>p.style.display='inline'); nairaCurrencies.forEach(c=>c.style.display='inline'); usdPrices.forEach(p=>p.style.display='none'); usdCurrencies.forEach(c=>c.style.display='none'); updateTotal(); }
   function showUSD(){ currentCurrency='USD'; usdToggle.classList.add('active'); nairaToggle.classList.remove('active'); usdPrices.forEach(p=>p.style.display='inline'); usdCurrencies.forEach(c=>c.style.display='inline'); nairaPrices.forEach(p=>p.style.display='none'); nairaCurrencies.forEach(c=>c.style.display='none'); updateTotal(); }
-  nairaToggle.addEventListener('click', showNGN);
-  if(USD_ENABLED && usdToggle){ usdToggle.addEventListener('click', showUSD); }
-  try {
-    const langs = navigator.languages || [navigator.language];
-    if(langs && langs.some(l=>/-NG$/i.test(l))) showNGN();
-    else if(USD_ENABLED) showUSD();
-    else showNGN();
-  } catch(e){ showNGN(); }
+  if(nairaToggle) nairaToggle.addEventListener('click', showNGN);
+  if(usdToggle) usdToggle.addEventListener('click', showUSD);
+  // Default to gated currency from server
+  if(currentCurrency==='NGN') showNGN(); else showUSD();
 
-  function selectedPlanPrice(){ const checked = document.querySelector('input[name="plan"]:checked'); if(!checked) return 0; const attr = currentCurrency==='NGN' ? 'data-price-ngn' : 'data-price-usd'; return Number(checked.getAttribute(attr) || 0); }
+  function selectedPlanPrice(){ const checked = document.querySelector('input[name="plan"]:checked'); if(!checked) return 0; const attr = currentCurrency==='NGN' ? 'data-price-ngn' : 'data-price-usd'; let price = Number(checked.getAttribute(attr) || 0); if(checked.value==='single-course'){ const qtyEl=document.getElementById('single_course_qty'); const qRaw = (qtyEl && qtyEl.value) ? Number(qtyEl.value) : 1; const q = Math.max(1, Math.min(20, Number(isNaN(qRaw)?1:qRaw))); price *= q; } return price; }
   function selectedPlan(){ const checked = document.querySelector('input[name="plan"]:checked'); return checked ? checked.value : null; }
   function expressAddonPrice(){ const el = document.getElementById('express_addon'); if(!el || !el.checked) return 0; return Number(el.getAttribute(currentCurrency==='NGN'?'data-price-ngn':'data-price-usd') || 0); }
   function isExpress(){ const el = document.getElementById('express_addon'); return !!(el && el.checked); }
+  function selectedModel(){ const el=document.querySelector('input[name="ai_model"]:checked'); return el?el.value:'gpt-5'; }
   function fmt(n){ return currentCurrency==='NGN' ? n.toLocaleString('en-NG') : n.toLocaleString('en-US'); }
   function updateTotal(){ const total = selectedPlanPrice() + expressAddonPrice(); document.getElementById('total-currency').textContent = currentCurrency==='NGN' ? '₦' : '$'; document.getElementById('total-amount').textContent = fmt(total); }
-  document.querySelectorAll('input[name="plan"]').forEach(r=>r.addEventListener('change', updateTotal));
+  document.querySelectorAll('input[name="plan"]').forEach(r=>r.addEventListener('change', ()=>{ const wrap=document.getElementById('singleCourseQtyWrap'); if(wrap){ wrap.classList.add('border','border-2','border-warning'); setTimeout(()=>wrap.classList.remove('border-2','border-warning'),800); } updateTotal(); }));
   const expressBox = document.getElementById('express_addon'); if(expressBox){ expressBox.addEventListener('change', updateTotal); }
+  const qtyEl = document.getElementById('single_course_qty');
+  const decBtn = document.getElementById('sc_dec');
+  const incBtn = document.getElementById('sc_inc');
+  function clampQty(){ if(!qtyEl) return; let v = Number(qtyEl.value||1); if(isNaN(v)) v=1; v = Math.max(1, Math.min(20, v)); qtyEl.value = v; updateTotal(); }
+  if(qtyEl){ qtyEl.addEventListener('input', clampQty); }
+  if(decBtn){ decBtn.addEventListener('click', ()=>{ if(!qtyEl) return; qtyEl.value = Math.max(1, Number(qtyEl.value||1)-1); clampQty(); }); }
+  if(incBtn){ incBtn.addEventListener('click', ()=>{ if(!qtyEl) return; qtyEl.value = Math.min(20, Number(qtyEl.value||1)+1); clampQty(); }); }
   updateTotal();
 
   function getCookie(name){ const v = `; ${document.cookie}`.split(`; ${name}=`); if(v.length===2) return v.pop().split(';').shift(); }
@@ -178,12 +195,16 @@
     const amount = selectedPlanPrice() + expressAddonPrice();
     const plan = selectedPlan();
     const express = isExpress();
+    const model = selectedModel();
+    let quantity = 1; if(plan==='single-course'){ const qEl=document.getElementById('single_course_qty'); const qRaw = (qEl && qEl.value) ? Number(qEl.value) : 1; quantity = Math.max(1, Math.min(20, Number(isNaN(qRaw)?1:qRaw))); }
     if(!amount || !plan){ alert('Please select a plan.'); return; }
     try {
-      const resp = await fetch('/api/payments/init/', {
+      const inline = false; // leave false by default; can be toggled later via UI
+      const endpoint = inline ? '/api/payments/prepare/' : '/api/payments/init/';
+      const resp = await fetch(endpoint, {
         method:'POST',
         headers:{ 'Content-Type':'application/json', 'X-CSRFToken': getCookie('csrftoken') },
-        body: JSON.stringify({ amount: amount, currency: currentCurrency, plan: plan, express: express })
+        body: JSON.stringify({ amount: amount, currency: currentCurrency, plan: plan, express: express, model: model, quantity: quantity })
       });
       const text = await resp.text();
       let data = {};
@@ -192,7 +213,12 @@
         alert(data.detail || (data.paystack && (data.paystack.message || data.paystack.status || data.paystack.error)) || 'Failed to initialize payment');
         return;
       }
-      if(data.authorization_url){ window.location.href = data.authorization_url; } else { alert('Could not get payment URL.'); }
+      if(data.authorization_url){ window.location.href = data.authorization_url; }
+      else if(data.public_key && data.reference){
+        alert('Inline checkout is available but not toggled on this page yet.');
+      } else {
+        alert('Could not get payment URL.');
+      }
     } catch(err){ alert('Payment init failed.'); }
   }
   document.getElementById('checkoutBtn').addEventListener('click', checkout);

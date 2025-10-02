@@ -1,0 +1,44 @@
+{% extends 'base.html' %}{% block content %}
+<div class="container py-5">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="mb-0">Agent Management</h3>
+    <a href="/blog/" class="btn btn-outline-secondary btn-sm">Back</a>
+  </div>
+  <form class="row g-2 mb-3" method="get">
+    <div class="col-sm-6"><input class="form-control" type="text" name="q" value="{{ q }}" placeholder="Search by email or username"></div>
+    <div class="col-auto"><button class="btn btn-primary" type="submit">Search</button></div>
+  </form>
+  <div class="table-responsive">
+    <table class="table table-sm align-middle">
+      <thead><tr><th>User</th><th>Reference</th><th>Status</th><th>Agent URL</th><th>Updated</th><th></th></tr></thead>
+      <tbody>
+        {% for b in bots %}
+        <tr>
+          <td>{{ b.owner.email|default:b.owner.username }}</td>
+          <td class="text-monospace">{{ b.reference }}</td>
+          <td>
+            <form class="d-flex gap-2" method="post" action="/cms/bots/update/">
+              {% csrf_token %}
+              <input type="hidden" name="bot_id" value="{{ b.id }}">
+              <select name="status" class="form-select form-select-sm" style="width: 160px;">
+                {% for val,label in b.Status.choices %}
+                <option value="{{ val }}" {% if b.status == val %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+          </td>
+          <td style="min-width: 260px;">
+              <input type="url" name="bot_url" value="{{ b.bot_url }}" class="form-control form-control-sm" placeholder="https://...">
+          </td>
+          <td class="text-muted small">{{ b.updated_at|date:"M d, Y H:i" }}</td>
+          <td><button class="btn btn-sm btn-outline-primary">Save</button></form></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" class="text-muted">No agents found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+

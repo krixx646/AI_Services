@@ -1,6 +1,8 @@
 :root { --primary-color: #4285f4; --secondary-color: #34a853; --accent-color: #ea4335; --background-color: #f8f9fa; --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); --text-primary: #202124; --text-secondary: #5f6368; --border-color: #dadce0; }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body.pricing-body { font-family: 'Roboto', sans-serif; background-color: var(--background-color); color: var(--text-primary); line-height: 1.6; }
+/* Ensure strong legibility when embedded inside brand-brown site theme */
+/* removed .pricing-page light overrides to restore brown theme */
 .pricing-wrapper { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
 .pricing-header { text-align: center; margin-bottom: 50px; }
 .pricing-header h1 { font-size: 2.5rem; margin-bottom: 15px; color: var(--text-primary); }
@@ -14,6 +16,7 @@ body.pricing-body { font-family: 'Roboto', sans-serif; background-color: var(--b
 .section-title i { margin-right: 10px; color: var(--primary-color); }
 .pricing-container { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; }
 .pricing-card { background: white; border-radius: 12px; box-shadow: var(--card-shadow); overflow: hidden; width: 100%; max-width: 280px; transition: transform 0.3s ease; position: relative; }
+.pricing-card-wide { max-width: 420px; }
 .pricing-card:hover { transform: translateY(-10px); }
 .pricing-card.featured { border: 2px solid var(--primary-color); transform: scale(1.05); }
 .pricing-card.featured:hover { transform: scale(1.05) translateY(-10px); }

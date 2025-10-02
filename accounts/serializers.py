@@ -1,7 +1,9 @@
 from rest_framework import serializers
+from django.db.models import Q
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import Student
+from .validators import validate_not_disposable_email
 
 
 class RegistrationSerialiser(serializers.ModelSerializer):
@@ -19,6 +21,7 @@ class RegistrationSerialiser(serializers.ModelSerializer):
     def validate_email(self, value):
         if Student.objects.filter(email__iexact=value).exists():
             raise serializers.ValidationError("Email already exists")
+        validate_not_disposable_email(value)
         return value
 
     def validate(self, attrs):
@@ -39,14 +42,15 @@ class RegistrationSerialiser(serializers.ModelSerializer):
 
 
 class LoginSerialiser(serializers.Serializer):
-    email = serializers.EmailField()
+    # Accept either email or username
+    email = serializers.CharField()
     password = serializers.CharField(write_only=True)
 
     def validate(self, attrs):
-        email = attrs.get("email")
+        identifier = (attrs.get("email") or "").strip()
         password = attrs.get("password")
         try:
-            user = Student.objects.get(email__iexact=email)
+            user = Student.objects.get(Q(email__iexact=identifier) | Q(username__iexact=identifier))
         except Student.DoesNotExist:
             raise serializers.ValidationError("Invalid credentials")
         if not user.check_password(password):

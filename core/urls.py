@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.contrib.auth import views as auth_views
 from django.views.generic import TemplateView
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 from .views import SearchView, PricingPageView
@@ -23,6 +24,8 @@ from accounts.views import LoginPageView, SignupPageView, ProfilePageView, Logou
 from django.conf import settings
 from django.conf.urls.static import static
 from django.conf import settings
+from django.http import JsonResponse
+from blog import views as blog_views
 
 
 
@@ -44,17 +47,44 @@ urlpatterns = [
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('api/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
     path('api/search/', SearchView.as_view(), name='global-search'),
+    path('api/health/', lambda r: JsonResponse({'status': 'ok'}), name='health'),
 
     # Site routes (templates)
     path('', TemplateView.as_view(template_name='index.html'), name='home'),
-    path('blog/', TemplateView.as_view(template_name='blog/list.html'), name='blog_list'),
-    path('blog/<slug:slug>/', TemplateView.as_view(template_name='blog/detail.html'), name='blog_detail'),
+    path('assignments/', TemplateView.as_view(template_name='index_assignments.html'), name='assignments_home'),
+    path('blog/', blog_views.SiteBlogListView.as_view(), name='blog_list'),
+    path('blog/<slug:slug>/', blog_views.SiteBlogDetailView.as_view(), name='blog_detail'),
+    # Custom post editor UI (outside Django admin to avoid route collision)
+    path('cms/posts/new/', blog_views.PostEditorView.as_view(), name='post_new'),
+    path('cms/posts/<int:post_id>/edit/', blog_views.PostEditorView.as_view(), name='post_edit'),
+    path('cms/uploads/images/', blog_views.EditorImageUploadView.as_view(), name='editor_image_upload'),
+    path('cms/bots/', blog_views.CmsBotListView.as_view(), name='cms_bots'),
+    path('cms/bots/update/', blog_views.CmsBotUpdateView.as_view(), name='cms_bots_update'),
     path('pricing/', PricingPageView.as_view(), name='pricing'),
+    path('pricing/assignments/', TemplateView.as_view(template_name='pricing_assignments.html'), name='pricing_assignments'),
     path('login/', LoginPageView.as_view(), name='login'),
     path('signup/', SignupPageView.as_view(), name='signup'),
     path('profile/', ProfilePageView.as_view(), name='profile'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('dashboard/', DashboardView.as_view(), name='dashboard'),
+
+    # Password reset flow
+    path('password-reset/', auth_views.PasswordResetView.as_view(
+        template_name='auth/password_reset.html',
+        email_template_name='auth/password_reset_email.txt',
+        subject_template_name='auth/password_reset_subject.txt',
+        success_url='/password-reset/done/'
+    ), name='password_reset'),
+    path('password-reset/done/', auth_views.PasswordResetDoneView.as_view(
+        template_name='auth/password_reset_done.html'
+    ), name='password_reset_done'),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(
+        template_name='auth/password_reset_confirm.html',
+        success_url='/reset/done/'
+    ), name='password_reset_confirm'),
+    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(
+        template_name='auth/password_reset_complete.html'
+    ), name='password_reset_complete'),
 ]
 
 if settings.DEBUG:

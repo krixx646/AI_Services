@@ -10,6 +10,17 @@ class SearchView(views.APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
+        # Cache simple search results for 60s based on q and type
+        try:
+            from django.core.cache import cache
+            q = request.GET.get("q", "").strip()
+            t = (request.GET.get("type", "all").strip() or "all").lower()
+            cache_key = f"search:{t}:{q}"
+            cached = cache.get(cache_key)
+            if cached:
+                return Response(cached)
+        except Exception:
+            cache = None
         query = request.query_params.get("q", "").strip()
         scope = (request.query_params.get("type", "").strip() or "all").lower()
         if not query:
@@ -71,7 +82,13 @@ class SearchView(views.APIView):
             except Exception:
                 results["reviews"] = []
 
-        return Response({"q": query, "type": scope, "results": results})
+        payload = {"q": query, "type": scope, "results": results}
+        try:
+            if cache and query:
+                cache.set(cache_key, payload, 60)
+        except Exception:
+            pass
+        return Response(payload)
 
 
 # Site views
@@ -81,6 +98,26 @@ class PricingPageView(TemplateView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         allowed = getattr(settings, "PAYSTACK_ALLOWED_CURRENCIES", ["NGN"]) or []
-        ctx["USD_ENABLED"] = "USD" in allowed
+
+        # Infer country (very lightweight): Cloudflare header or generic 'X-Country', then Accept-Language
+        request = self.request
+        country = (request.META.get("HTTP_CF_IPCOUNTRY") or request.META.get("HTTP_X_COUNTRY") or "").strip().upper()
+        if not country:
+            al = (request.META.get("HTTP_ACCEPT_LANGUAGE") or "").lower()
+            # Any locale ending with -ng (e.g., en-NG)
+            if "-ng" in al:
+                country = "NG"
+
+        # Gate: Nigerians → NGN only; others → USD only (if allowed)
+        show_ngn = ("NGN" in allowed) and (country == "NG" or "USD" not in allowed)
+        show_usd = ("USD" in allowed) and (country != "NG")
+        # Fallbacks to ensure at least one is visible
+        if not show_ngn and not show_usd:
+            show_ngn = "NGN" in allowed
+        gated_currency = "NGN" if show_ngn else ("USD" if show_usd else "NGN")
+
+        ctx["SHOW_NGN"] = show_ngn
+        ctx["SHOW_USD"] = show_usd
+        ctx["GATED_CURRENCY"] = gated_currency
         return ctx
 

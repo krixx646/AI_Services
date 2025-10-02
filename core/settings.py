@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'drf_spectacular',
     'corsheaders',
+    # 'sentry_sdk.integrations.django' is not an app; Sentry SDK is initialized conditionally below
 
     # local apps
     'blog',
@@ -185,6 +186,23 @@ REST_FRAMEWORK = {
 }
 AUTH_USER_MODEL = "accounts.Student"
 
+# Email backend defaults (console in DEBUG; SMTP in production if configured)
+EMAIL_BACKEND = os.environ.get(
+    'EMAIL_BACKEND',
+    'django.core.mail.backends.console.EmailBackend' if DEBUG else 'django.core.mail.backends.smtp.EmailBackend'
+)
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'no-reply@ai-services.local')
+
+# SMTP configuration via environment variables (used when EMAIL_BACKEND is SMTP)
+# These defaults keep local dev harmless; set in .env for real delivery
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'localhost')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '25') or 25)
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'False').lower() == 'true'
+EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', 'False').lower() == 'true'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+SERVER_EMAIL = os.environ.get('SERVER_EMAIL', DEFAULT_FROM_EMAIL)
+
 SPECTACULAR_SETTINGS = {
     "TITLE": "AI Notes-to-Chatbot API",
     "DESCRIPTION": "API for accounts, payments, processing, bots, reviews, and blog.",
@@ -218,6 +236,106 @@ else:
 _allowed_currencies = os.environ.get('PAYSTACK_ALLOWED_CURRENCIES', 'NGN')
 PAYSTACK_ALLOWED_CURRENCIES = [c.strip().upper() for c in _allowed_currencies.split(',') if c.strip()]
 
+# Pricing catalog (major units). Server uses this to calculate amounts.
+PRICING_CATALOG = {
+    "NGN": {
+        "trial": 2000,
+        "starter": 10000,
+        "standard": 14999,
+        "extended": 19000,
+        "single-course": 10000,
+        "bundle-6": 50000,
+    },
+    "USD": {
+        "trial": 10,
+        "starter": 29,
+        "standard": 49,
+        "extended": 69,
+        "single-course": 30,
+        "bundle-6": 160,
+    },
+}
+
+# Express add-on price (major units)
+EXPRESS_ADDON_PRICE = {
+    "NGN": 2000,
+    "USD": 10,
+}
+
+# Allowed AI models for selection on checkout
+AI_MODELS_ALLOWED = [
+    "gpt-5",
+    "gemini-2.5-flash",
+]
+
 # Static files storage for production
 if not DEBUG:
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Caching (locmem by default; optional Redis via REDIS_URL)
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "unique-ai-services-cache",
+    }
+}
+_redis_url = os.environ.get("REDIS_URL")
+if _redis_url:
+    CACHES["default"] = {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": _redis_url,
+    }
+
+# Conditional GET
+USE_ETAGS = True
+
+# Sentry (optional)
+SENTRY_DSN = os.environ.get('SENTRY_DSN', '').strip()
+if SENTRY_DSN:
+    try:
+        import sentry_sdk
+        from sentry_sdk.integrations.django import DjangoIntegration
+
+        sentry_sdk.init(
+            dsn=SENTRY_DSN,
+            integrations=[DjangoIntegration()],
+            traces_sample_rate=float(os.environ.get('SENTRY_TRACES_SAMPLE_RATE', '0.0') or 0.0),
+            send_default_pii=False,
+            environment=os.environ.get('SENTRY_ENVIRONMENT', 'production'),
+        )
+    except Exception:
+        pass
+
+# Security hardening via env (prod only recommended)
+SECURE_SSL_REDIRECT = os.environ.get('SECURE_SSL_REDIRECT', 'False').lower() == 'true'
+SESSION_COOKIE_SECURE = os.environ.get('SESSION_COOKIE_SECURE', 'False').lower() == 'true'
+CSRF_COOKIE_SECURE = os.environ.get('CSRF_COOKIE_SECURE', 'False').lower() == 'true'
+SECURE_HSTS_SECONDS = int(os.environ.get('SECURE_HSTS_SECONDS', '0') or 0)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = os.environ.get('SECURE_HSTS_INCLUDE_SUBDOMAINS', 'False').lower() == 'true'
+SECURE_HSTS_PRELOAD = os.environ.get('SECURE_HSTS_PRELOAD', 'False').lower() == 'true'
+
+# Minimal request logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': os.environ.get('LOG_LEVEL', 'INFO'),
+    },
+}
+
+# Disposable email protection (extend as needed)
+DISPOSABLE_EMAIL_DOMAINS = set([
+    # Common disposable domains (subset; extend in env for prod)
+    'mailinator.com', 'guerrillamail.com', 'sharklasers.com', '10minutemail.com',
+    'tempmail.com', 'tempmail.dev', 'tempmailo.com', 'trashmail.com',
+    'fakeinbox.com', 'getnada.com', 'yopmail.com', 'mintemail.com',
+    '*.tempmail.com', '*.yopmail.com',
+])
+
+BANNED_EMAIL_LOCALPARTS = set(['test', 'testing', 'admin', 'user', 'sample'])

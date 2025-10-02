@@ -13,26 +13,31 @@
       <div class="col-md-6">
         <label class="form-label">Username</label>
         {{ form.username|add_class:'form-control' }}
+        <div class="form-text">This name appears on your profile. You can change it later.</div>
         {{ form.username.errors }}
       </div>
       <div class="col-md-6">
         <label class="form-label">Phone</label>
         {{ form.phone|add_class:'form-control' }}
+        <div class="form-text">WhatsApp/phone we can reach if needed (optional).</div>
         {{ form.phone.errors }}
       </div>
       <div class="col-12">
         <label class="form-label">Email</label>
         {{ form.email|add_class:'form-control' }}
+        <div class="form-text">Use a real, non‑disposable email. We’ll send a verification link.</div>
         {{ form.email.errors }}
       </div>
       <div class="col-md-6">
         <label class="form-label">Password</label>
         {{ form.password1|add_class:'form-control' }}
+        <div class="form-text">Min 8 characters. Use letters, numbers, and symbols.</div>
         {{ form.password1.errors }}
       </div>
       <div class="col-md-6">
         <label class="form-label">Confirm password</label>
         {{ form.password2|add_class:'form-control' }}
+        <div class="form-text">Re‑enter your password exactly.</div>
         {{ form.password2.errors }}
       </div>
     </div>

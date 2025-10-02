@@ -1,6 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from .models import Student
+from .validators import validate_not_disposable_email
 
 
 class RegistrationForm(forms.ModelForm):
@@ -15,6 +16,8 @@ class RegistrationForm(forms.ModelForm):
         email = self.cleaned_data.get("email", "").strip().lower()
         if Student.objects.filter(email__iexact=email).exists():
             raise ValidationError("A user with that email already exists.")
+        # Block disposable and dummy emails
+        validate_not_disposable_email(email)
         return email
 
     def clean(self):
@@ -36,7 +39,7 @@ class RegistrationForm(forms.ModelForm):
 
 
 class LoginForm(forms.Form):
-    email = forms.EmailField(label="Your email address")
+    email = forms.CharField(label="Email or Username")
     password = forms.CharField(label="Password", widget=forms.PasswordInput)
 
 

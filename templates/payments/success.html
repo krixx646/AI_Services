@@ -11,6 +11,8 @@
           <dt class="col-4">Currency</dt><dd class="col-8" id="currency">—</dd>
           <dt class="col-4">Status</dt><dd class="col-8" id="status">—</dd>
           <dt class="col-4">Paid at</dt><dd class="col-8" id="paidAt">—</dd>
+          <dt class="col-4">Quantity</dt><dd class="col-8" id="quantity">—</dd>
+          <dt class="col-4">AI Model</dt><dd class="col-8" id="model">—</dd>
         </dl>
       </div>
       <hr>
@@ -33,6 +35,9 @@
     document.getElementById('currency').textContent = data?.data?.currency || '—';
     document.getElementById('status').textContent = data?.data?.status || '—';
     document.getElementById('paidAt').textContent = data?.data?.paidAt || data?.data?.transaction_date || '—';
+    const metadata = data?.data?.metadata || {};
+    document.getElementById('model').textContent = metadata?.model || 'gpt-5';
+    document.getElementById('quantity').textContent = metadata?.quantity || 1;
     document.getElementById('details').classList.remove('d-none');
   } catch(e){
     document.getElementById('statusBox').className = 'alert alert-danger';

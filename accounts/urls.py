@@ -15,6 +15,7 @@ def health(request):
 
 urlpatterns = [
     path("health/", health, name="health"),
+    path("verify-email/", views.verify_email_view, name="verify_email"),
     path('', include(router.urls)),
 
 ]

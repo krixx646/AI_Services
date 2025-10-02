@@ -1,1 +1,38 @@
-{% extends 'base.html' %}{% block content %}<div class="container py-5"><h1>Blog List</h1></div>{% endblock %}
+{% extends 'base.html' %}{% block content %}
+<div class="container py-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0">Blog</h1>
+    {% if request.user.is_authenticated and request.user.is_staff %}
+    <a class="btn btn-primary" href="/cms/posts/new/">New Post</a>
+    {% endif %}
+  </div>
+  {% if posts %}
+  <div class="row g-4">
+    {% for p in posts %}
+    <div class="col-md-6">
+      <div class="card h-100">
+        {% if p.cover_image %}
+        <img src="{{ p.cover_image.url }}" class="card-img-top" alt="{{ p.title }}" style="max-height:200px;object-fit:cover;">
+        {% endif %}
+        <div class="card-body">
+          <h5 class="card-title"><a class="text-decoration-none" href="/blog/{{ p.slug }}/">{{ p.title }}</a></h5>
+          <p class="card-text text-muted small mb-2">{{ p.published_at|date:"M d, Y" }}{% if not p.published_at %} · Draft{% endif %}</p>
+          <p class="card-text">{{ p.excerpt|default:p.content|truncatewords:30 }}</p>
+          <a href="/blog/{{ p.slug }}/" class="btn btn-sm btn-primary">Read more</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="text-muted">No posts yet.</p>
+  {% endif %}
+  {% if request.user.is_authenticated and request.user.is_staff %}
+  <hr class="my-5">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="mb-0">Bot Management (staff)</h5>
+    <a class="btn btn-outline-secondary btn-sm" href="/cms/bots/">Open</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -60,7 +60,14 @@ class Post(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.title)
+            base = slugify(self.title) or "post"
+            candidate = base
+            counter = 2
+            from .models import Post  # local import to avoid circular during app loading
+            while Post.objects.filter(slug=candidate).exclude(pk=self.pk).exists():
+                candidate = f"{base}-{counter}"
+                counter += 1
+            self.slug = candidate
         return super().save(*args, **kwargs)
 
     def __str__(self) -> str:
