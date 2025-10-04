@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/payments/webhook/
+Disallow: /cms/
+
+Sitemap: https://krixx.pythonanywhere.com/sitemap.xml
+

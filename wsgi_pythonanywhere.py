@@ -16,7 +16,8 @@ os.environ['CORS_ALLOWED_ORIGINS'] = 'https://krixx.pythonanywhere.com'
 # Get them from: https://dashboard.paystack.com/#/settings/developer
 os.environ['PAYSTACK_PUBLIC_KEY'] = 'YOUR_PAYSTACK_PUBLIC_KEY_HERE'  # ⬅️ REPLACE THIS
 os.environ['PAYSTACK_SECRET_KEY'] = 'YOUR_PAYSTACK_SECRET_KEY_HERE'  # ⬅️ REPLACE THIS
-os.environ['PAYSTACK_WEBHOOK_SECRET'] = 'YOUR_WEBHOOK_SECRET_HERE'  # ⬅️ REPLACE THIS
+# Webhook secret (OPTIONAL - only if you set up webhooks)
+os.environ['PAYSTACK_WEBHOOK_SECRET'] = ''  # Leave empty if not using webhooks
 
 # Currency settings
 os.environ['PAYSTACK_ALLOWED_CURRENCIES'] = 'NGN'  # Can add USD when ready: 'NGN,USD'
