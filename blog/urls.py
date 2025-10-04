@@ -12,4 +12,5 @@ urlpatterns = [
     path('posts/<int:post_id>/comments/', views.PostCommentsView.as_view(), name='post-comments'),
     path('comments/<int:comment_id>/moderate/', views.CommentModerateView.as_view(), name='comment-moderate'),
     path('comments/<int:comment_id>/', views.CommentDetailView.as_view(), name='comment-detail'),
+    path('tts/', views.BlogTextToSpeechView.as_view(), name='blog-tts'),
 ]

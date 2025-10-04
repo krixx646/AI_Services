@@ -16,7 +16,11 @@ class Command(BaseCommand):
 
         bot = BotInstance.objects.filter(owner=user).first()
         if not bot:
-            bot = BotInstance.objects.create(owner=user, status=BotInstance.Status.READY, bot_url="https://example.com/demo-bot")
+            bot = BotInstance.objects.create(
+                owner=user, 
+                status=BotInstance.Status.READY, 
+                bot_url="https://cdn.botpress.cloud/webchat/v3.3/shareable.html?configUrl=https://files.bpcontent.cloud/2025/10/02/13/20251002132027-GSNRC2QE.json"
+            )
 
         if not Question.objects.filter(bot=bot).exists():
             q1 = Question.objects.create(bot=bot, text="What is this service?")

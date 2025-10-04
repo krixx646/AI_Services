@@ -40,7 +40,7 @@ class PaymentTransaction(models.Model):
     student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="payments")
     reference = models.CharField(max_length=100, unique=True)
     amount = models.DecimalField(max_digits=12, decimal_places=2)
-    currency = models.CharField(max_length=8, default="USD")
+    currency = models.CharField(max_length=8, default="NGN")
     status = models.CharField(max_length=16, choices=Status.choices, default=Status.PENDING)
     raw_payload = models.JSONField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)

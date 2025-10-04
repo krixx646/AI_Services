@@ -1,20 +1,349 @@
 {% extends 'base.html' %}{% block content %}
 <div class="container py-5" style="max-width: 900px;">
-  <p><a href="/blog/" class="text-decoration-none">← Back to Blog</a></p>
-  <h1 class="mb-2">{{ post.title }}</h1>
-  <p class="text-muted">{{ post.published_at|date:"M d, Y" }}</p>
-  {% if post.cover_image %}
-  <img src="{{ post.cover_image.url }}" alt="{{ post.title }}" class="img-fluid rounded mb-4">
-  {% endif %}
-  <div class="content">
-    {{ post.content|safe }}
+  <p><a href="/blog/" class="text-decoration-none text-white">← Back to Blog</a></p>
+  
+  <!-- White card container for better readability -->
+  <div class="bg-white rounded-3 shadow-sm p-4 p-md-5" style="color: #333;">
+    <h1 class="mb-3">{{ post.title }}</h1>
+    
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+      <p class="text-muted mb-0"><i class="bi bi-calendar3 me-2"></i>{{ post.published_at|date:"M d, Y" }}</p>
+      
+      <!-- Audio Player Controls -->
+      <div class="audio-controls d-flex gap-2 align-items-center">
+        <button id="playPauseBtn" class="btn btn-outline-primary btn-sm" title="Listen to this article">
+          <i class="bi bi-volume-up me-1"></i><span id="playPauseText">Listen</span>
+        </button>
+        <button id="stopBtn" class="btn btn-outline-secondary btn-sm d-none" title="Stop">
+          <i class="bi bi-stop-fill"></i>
+        </button>
+        <select id="voiceSpeed" class="form-select form-select-sm d-none" style="width: 90px;" title="Speed">
+          <option value="0.75">0.75x</option>
+          <option value="1" selected>1x</option>
+          <option value="1.25">1.25x</option>
+          <option value="1.5">1.5x</option>
+        </select>
+      </div>
+    </div>
+    
+    {% if post.cover_image %}
+    <img src="{{ post.cover_image.url }}" alt="{{ post.title }}" class="img-fluid rounded mb-4" style="max-height: 400px; width: 100%; object-fit: cover;">
+    {% endif %}
+    
+    <div class="content" id="articleContent" style="line-height: 1.8; font-size: 1.05rem;">
+      {{ post.content|safe }}
+    </div>
   </div>
   {% if can_manage %}
-  <form method="post" class="mt-4" onsubmit="return confirm('Delete this post?');">
-    {% csrf_token %}
-    <input type="hidden" name="_method" value="delete">
-    <button class="btn btn-outline-danger">Delete Post</button>
-  </form>
+  <div class="mt-4">
+    <a href="/cms/posts/{{ post.id }}/edit/" class="btn btn-outline-primary me-2">Edit Post</a>
+    <form method="post" class="d-inline" onsubmit="return confirm('Delete this post permanently?');">
+      {% csrf_token %}
+      <input type="hidden" name="_method" value="delete">
+      <button class="btn btn-outline-danger">Delete Post</button>
+    </form>
+  </div>
   {% endif %}
 </div>
+
+<!-- Text-to-Speech Script with Google Cloud TTS -->
+<script>
+(function() {
+  'use strict';
+  
+  const playPauseBtn = document.getElementById('playPauseBtn');
+  const stopBtn = document.getElementById('stopBtn');
+  const voiceSpeed = document.getElementById('voiceSpeed');
+  const playPauseText = document.getElementById('playPauseText');
+  const articleContent = document.getElementById('articleContent');
+  
+  let audioElement = null;
+  let isPlaying = false;
+  let useWebSpeechAPI = false;
+  let utterance = null;
+  let isPaused = false;
+  
+  // Function to extract clean text from HTML content
+  function getCleanText(element) {
+    const clone = element.cloneNode(true);
+    // Remove script and style tags
+    const unwanted = clone.querySelectorAll('script, style, img');
+    unwanted.forEach(el => el.remove());
+    
+    // Get text and clean it up
+    let text = clone.textContent || clone.innerText || '';
+    text = text.replace(/\s+/g, ' ').trim();
+    return text;
+  }
+  
+  // Initialize utterance with article content
+  function createUtterance() {
+    const text = getCleanText(articleContent);
+    if (!text) {
+      alert('No content to read.');
+      return null;
+    }
+    
+    const newUtterance = new SpeechSynthesisUtterance(text);
+    newUtterance.lang = 'en-US';
+    newUtterance.rate = parseFloat(voiceSpeed.value);
+    newUtterance.pitch = 1;
+    newUtterance.volume = 1;
+    
+    // Event listeners
+    newUtterance.onstart = function() {
+      isPlaying = true;
+      isPaused = false;
+      playPauseBtn.classList.remove('btn-outline-primary');
+      playPauseBtn.classList.add('btn-primary');
+      playPauseText.textContent = 'Pause';
+      stopBtn.classList.remove('d-none');
+      voiceSpeed.classList.remove('d-none');
+    };
+    
+    newUtterance.onend = function() {
+      isPlaying = false;
+      isPaused = false;
+      playPauseBtn.classList.remove('btn-primary');
+      playPauseBtn.classList.add('btn-outline-primary');
+      playPauseText.textContent = 'Listen';
+      stopBtn.classList.add('d-none');
+    };
+    
+    newUtterance.onerror = function(event) {
+      console.error('Speech synthesis error:', event);
+      isPlaying = false;
+      isPaused = false;
+      playPauseBtn.classList.remove('btn-primary');
+      playPauseBtn.classList.add('btn-outline-primary');
+      playPauseText.textContent = 'Listen';
+      stopBtn.classList.add('d-none');
+    };
+    
+    return newUtterance;
+  }
+  
+  // Get CSRF token
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+  
+  // Fetch audio from Edge TTS
+  async function fetchGoogleTTS() {
+    const text = getCleanText(articleContent);
+    if (!text) {
+      alert('No content to read.');
+      return null;
+    }
+    
+    playPauseBtn.disabled = true;
+    playPauseText.textContent = 'Loading...';
+    
+    try {
+      const csrftoken = getCookie('csrftoken');
+      const response = await fetch('/api/blog/tts/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrftoken
+        },
+        body: JSON.stringify({ text: text })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok && data.audioContent) {
+        // Decode base64 audio and create blob
+        const audioBlob = base64ToBlob(data.audioContent, 'audio/mp3');
+        const audioUrl = URL.createObjectURL(audioBlob);
+        return audioUrl;
+      } else {
+        // Fallback to Web Speech API
+        console.log('Google TTS unavailable, using Web Speech API');
+        useWebSpeechAPI = true;
+        return null;
+      }
+    } catch (error) {
+      console.error('TTS error:', error);
+      useWebSpeechAPI = true;
+      return null;
+    } finally {
+      playPauseBtn.disabled = false;
+      playPauseText.textContent = 'Listen';
+    }
+  }
+  
+  // Convert base64 to blob
+  function base64ToBlob(base64, mimeType) {
+    const byteCharacters = atob(base64);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    return new Blob([byteArray], { type: mimeType });
+  }
+  
+  // Play/Pause button handler
+  playPauseBtn.addEventListener('click', async function() {
+    if (!isPlaying && !isPaused) {
+      // Try Google Cloud TTS first
+      if (!useWebSpeechAPI && !audioElement) {
+        const audioUrl = await fetchGoogleTTS();
+        
+        if (audioUrl) {
+          // Use HTML5 Audio with Google TTS
+          audioElement = new Audio(audioUrl);
+          audioElement.playbackRate = parseFloat(voiceSpeed.value);
+          
+          audioElement.onplay = function() {
+            isPlaying = true;
+            playPauseBtn.classList.remove('btn-outline-primary');
+            playPauseBtn.classList.add('btn-primary');
+            playPauseText.textContent = 'Pause';
+            stopBtn.classList.remove('d-none');
+            voiceSpeed.classList.remove('d-none');
+          };
+          
+          audioElement.onpause = function() {
+            if (!audioElement.ended) {
+              isPaused = true;
+              playPauseBtn.classList.remove('btn-primary');
+              playPauseBtn.classList.add('btn-warning');
+              playPauseText.textContent = 'Resume';
+            }
+          };
+          
+          audioElement.onended = function() {
+            isPlaying = false;
+            isPaused = false;
+            playPauseBtn.classList.remove('btn-primary', 'btn-warning');
+            playPauseBtn.classList.add('btn-outline-primary');
+            playPauseText.textContent = 'Listen';
+            stopBtn.classList.add('d-none');
+            URL.revokeObjectURL(audioUrl);
+            audioElement = null;
+          };
+          
+          audioElement.play();
+          return;
+        }
+      }
+      
+      // Fallback to Web Speech API
+      if (useWebSpeechAPI || !audioElement) {
+        if (!('speechSynthesis' in window)) {
+          alert('Audio playback not supported in this browser.');
+          return;
+        }
+        
+        utterance = createUtterance();
+        if (utterance) {
+          window.speechSynthesis.speak(utterance);
+        }
+      }
+    } else if (audioElement && isPlaying && !isPaused) {
+      // Pause HTML5 audio
+      audioElement.pause();
+    } else if (audioElement && isPaused) {
+      // Resume HTML5 audio
+      audioElement.play();
+      isPaused = false;
+      playPauseBtn.classList.remove('btn-warning');
+      playPauseBtn.classList.add('btn-primary');
+      playPauseText.textContent = 'Pause';
+    } else if (useWebSpeechAPI && isPlaying && !isPaused) {
+      // Pause Web Speech API
+      window.speechSynthesis.pause();
+      isPaused = true;
+      playPauseBtn.classList.remove('btn-primary');
+      playPauseBtn.classList.add('btn-warning');
+      playPauseText.textContent = 'Resume';
+    } else if (useWebSpeechAPI && isPaused) {
+      // Resume Web Speech API
+      window.speechSynthesis.resume();
+      isPaused = false;
+      playPauseBtn.classList.remove('btn-warning');
+      playPauseBtn.classList.add('btn-primary');
+      playPauseText.textContent = 'Pause';
+    }
+  });
+  
+  // Stop button handler
+  stopBtn.addEventListener('click', function() {
+    if (audioElement) {
+      audioElement.pause();
+      audioElement.currentTime = 0;
+      audioElement = null;
+    }
+    if (useWebSpeechAPI) {
+      window.speechSynthesis.cancel();
+    }
+    isPlaying = false;
+    isPaused = false;
+    playPauseBtn.classList.remove('btn-primary', 'btn-warning');
+    playPauseBtn.classList.add('btn-outline-primary');
+    playPauseText.textContent = 'Listen';
+    stopBtn.classList.add('d-none');
+  });
+  
+  // Speed change handler
+  voiceSpeed.addEventListener('change', function() {
+    const newSpeed = parseFloat(voiceSpeed.value);
+    
+    if (audioElement && isPlaying) {
+      // Adjust HTML5 audio speed on the fly
+      audioElement.playbackRate = newSpeed;
+    } else if (useWebSpeechAPI && isPlaying) {
+      // Need to restart Web Speech API with new speed
+      const wasPlaying = !isPaused;
+      window.speechSynthesis.cancel();
+      utterance = createUtterance();
+      if (utterance && wasPlaying) {
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+  });
+  
+  // Clean up on page unload
+  window.addEventListener('beforeunload', function() {
+    if (audioElement) {
+      audioElement.pause();
+      audioElement = null;
+    }
+    if (useWebSpeechAPI && isPlaying) {
+      window.speechSynthesis.cancel();
+    }
+  });
+})();
+</script>
+
+<style>
+  .audio-controls button:hover {
+    transform: translateY(-1px);
+    transition: all 0.2s ease;
+  }
+  
+  @media (max-width: 576px) {
+    .audio-controls {
+      flex-direction: column;
+      align-items: flex-end !important;
+    }
+    .audio-controls button,
+    .audio-controls select {
+      width: 100%;
+    }
+  }
+</style>
 {% endblock %}

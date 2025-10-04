@@ -314,3 +314,387 @@ class CmsBotUpdateView(View):
         bot.bot_url = url or None
         bot.save(update_fields=['status', 'bot_url', 'updated_at'])
         return redirect('cms_bots')
+
+
+class BlogTextToSpeechView(views.APIView):
+    """
+    Generate natural-sounding audio from blog post text using Microsoft Edge TTS.
+    Completely FREE, unlimited usage, no API key required!
+    Uses edge-tts library for professional-quality voices.
+    """
+    permission_classes = [AllowAny]
+    
+    def post(self, request):
+        import re
+        import base64
+        import asyncio
+        
+        text = request.data.get('text', '').strip()
+        if not text:
+            return Response({'error': 'No text provided'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Clean HTML tags
+        text = re.sub(r'<[^>]+>', '', text)
+        text = re.sub(r'\s+', ' ', text).strip()
+        
+        # Limit text length for performance (Edge TTS has no hard limit)
+        if len(text) > 5000:
+            text = text[:5000] + '...'
+        
+        try:
+            # Import edge-tts (install with: pip install edge-tts)
+            import edge_tts
+            
+            # Choose voice
+            # Male voices:
+            # 'en-US-GuyNeural' - Deep, professional
+            # 'en-US-ChristopherNeural' - Clear, friendly
+            # Female voices:
+            # 'en-US-AriaNeural' - Natural, conversational
+            # 'en-US-JennyNeural' - Warm, expressive
+            
+            voice = 'en-US-GuyNeural'  # Professional male voice
+            
+            # Generate audio using edge-tts
+            async def generate_audio():
+                communicate = edge_tts.Communicate(text, voice)
+                audio_data = b''
+                async for chunk in communicate.stream():
+                    if chunk["type"] == "audio":
+                        audio_data += chunk["data"]
+                return audio_data
+            
+            # Run async function
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            audio_data = loop.run_until_complete(generate_audio())
+            loop.close()
+            
+            if audio_data:
+                # Convert to base64
+                audio_content = base64.b64encode(audio_data).decode('utf-8')
+                
+                return Response({
+                    'audioContent': audio_content,
+                    'format': 'mp3'
+                })
+            else:
+                return Response({
+                    'error': 'No audio generated',
+                    'fallback': 'web-speech-api'
+                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                
+        except ImportError:
+            # edge-tts not installed
+            return Response({
+                'error': 'edge-tts library not installed. Run: pip install edge-tts',
+                'fallback': 'web-speech-api'
+            }, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        except Exception as e:
+            return Response({
+                'error': f'TTS error: {str(e)}',
+                'fallback': 'web-speech-api'
+            }, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
+
+class CmsPaymentListView(View):
+    """Admin view to manage all payments and their associated bots"""
+    @method_decorator(login_required)
+    def get(self, request):
+        if not request.user.is_staff:
+            return redirect('blog_list')
+        
+        from django.db.models import Q, Count, Sum
+        
+        # Get filters
+        q = (request.GET.get('q') or '').strip()
+        filter_status = request.GET.get('status', '').strip()
+        filter_bot_status = request.GET.get('bot_status', '').strip()
+        
+        # Base queryset
+        payments = PaymentTransaction.objects.select_related('student').order_by('-created_at')
+        
+        # Apply search filter
+        if q:
+            payments = payments.filter(
+                Q(reference__icontains=q) |
+                Q(student__email__icontains=q) |
+                Q(student__username__icontains=q)
+            )
+        
+        # Apply payment status filter
+        if filter_status:
+            payments = payments.filter(status=filter_status)
+        
+        # Get all payments (limit to 50 for performance)
+        payments = list(payments[:50])
+        
+        # Attach bot info to each payment
+        for payment in payments:
+            try:
+                raw = payment.raw_payload or {}
+                if isinstance(raw, dict):
+                    bot_ref = raw.get("bot_reference")
+                    if bot_ref:
+                        bot = BotInstance.objects.filter(reference=bot_ref).first()
+                        if bot:
+                            payment.bot_info = bot
+                        else:
+                            payment.bot_info = None
+                    else:
+                        payment.bot_info = None
+                else:
+                    payment.bot_info = None
+            except Exception:
+                payment.bot_info = None
+        
+        # Apply bot status filter
+        if filter_bot_status:
+            if filter_bot_status == 'none':
+                payments = [p for p in payments if not hasattr(p, 'bot_info') or p.bot_info is None]
+            else:
+                payments = [p for p in payments if hasattr(p, 'bot_info') and p.bot_info and p.bot_info.status == filter_bot_status]
+        
+        # Calculate statistics
+        all_payments = PaymentTransaction.objects.all()
+        stats = {
+            'success_count': all_payments.filter(status='success').count(),
+            'success_amount': all_payments.filter(status='success').aggregate(Sum('amount'))['amount__sum'] or 0,
+            'pending_count': all_payments.filter(status='pending').count(),
+            'pending_amount': all_payments.filter(status='pending').aggregate(Sum('amount'))['amount__sum'] or 0,
+            'bots_ready': BotInstance.objects.filter(status='ready').count(),
+            'needs_processing': all_payments.filter(status='success').exclude(
+                raw_payload__bot_reference__isnull=False
+            ).count(),
+            'currency': 'NGN',
+        }
+        
+        return render(request, 'cms/payments.html', {
+            'payments': payments,
+            'stats': stats,
+            'q': q,
+            'filter_status': filter_status,
+            'filter_bot_status': filter_bot_status,
+        })
+
+
+class CmsPaymentUpdateStatusView(View):
+    """Update payment status"""
+    @method_decorator(login_required)
+    def post(self, request):
+        if not request.user.is_staff:
+            return HttpResponseForbidden("Not allowed")
+        
+        payment_id = request.POST.get('payment_id')
+        new_status = request.POST.get('payment_status')
+        
+        try:
+            payment = PaymentTransaction.objects.get(id=payment_id)
+            if new_status in dict(PaymentTransaction.Status.choices):
+                payment.status = new_status
+                payment.save(update_fields=['status', 'updated_at'])
+                
+                # Auto-create bot if status changed to success and no bot exists
+                if new_status == 'success':
+                    raw = payment.raw_payload or {}
+                    if not raw.get('bot_reference'):
+                        bot = BotInstance.objects.create(
+                            owner=payment.student,
+                            status=BotInstance.Status.PENDING
+                        )
+                        raw['bot_reference'] = str(bot.reference)
+                        payment.raw_payload = raw
+                        payment.save(update_fields=['raw_payload'])
+        except PaymentTransaction.DoesNotExist:
+            pass
+        
+        return redirect('cms_payments')
+
+
+class CmsPaymentUpdateBotView(View):
+    """Update bot URL and status from payment management page"""
+    @method_decorator(login_required)
+    def post(self, request):
+        if not request.user.is_staff:
+            return HttpResponseForbidden("Not allowed")
+        
+        bot_id = request.POST.get('bot_id')
+        bot_url = (request.POST.get('bot_url') or '').strip()
+        
+        try:
+            bot = BotInstance.objects.get(id=bot_id)
+            bot.bot_url = bot_url or None
+            
+            # Auto-update status to 'ready' if URL is provided
+            if bot_url and bot.status != 'ready':
+                bot.status = BotInstance.Status.READY
+            
+            bot.save(update_fields=['bot_url', 'status', 'updated_at'])
+        except BotInstance.DoesNotExist:
+            pass
+        
+        return redirect('cms_payments')
+
+
+class CmsPaymentCreateBotView(View):
+    """Create a bot for a payment that doesn't have one"""
+    @method_decorator(login_required)
+    def post(self, request):
+        if not request.user.is_staff:
+            return HttpResponseForbidden("Not allowed")
+        
+        payment_reference = request.POST.get('payment_reference')
+        
+        try:
+            payment = PaymentTransaction.objects.get(reference=payment_reference)
+            
+            # Create bot
+            bot = BotInstance.objects.create(
+                owner=payment.student,
+                status=BotInstance.Status.PENDING
+            )
+            
+            # Link bot to payment
+            raw = payment.raw_payload or {}
+            raw['bot_reference'] = str(bot.reference)
+            payment.raw_payload = raw
+            payment.save(update_fields=['raw_payload'])
+        except PaymentTransaction.DoesNotExist:
+            pass
+        
+        return redirect('cms_payments')
+
+
+class CmsPaymentDeleteView(View):
+    """Delete a payment record"""
+    @method_decorator(login_required)
+    def post(self, request):
+        if not request.user.is_staff:
+            return HttpResponseForbidden("Not allowed")
+        
+        payment_id = request.POST.get('payment_id')
+        
+        try:
+            payment = PaymentTransaction.objects.get(id=payment_id)
+            
+            # Also delete associated bot if it exists
+            raw = payment.raw_payload or {}
+            if isinstance(raw, dict):
+                bot_ref = raw.get('bot_reference')
+                if bot_ref:
+                    BotInstance.objects.filter(reference=bot_ref).delete()
+            
+            payment.delete()
+        except PaymentTransaction.DoesNotExist:
+            pass
+        
+        return redirect('cms_payments')
+
+
+class CmsCommentModerationView(View):
+    """Admin interface to moderate blog comments"""
+    @method_decorator(login_required)
+    def get(self, request):
+        if not request.user.is_staff:
+            return redirect('blog_list')
+        
+        from blog.models import Comment
+        from django.db.models import Q
+        
+        # Get filters
+        q = (request.GET.get('q') or '').strip()
+        filter_status = request.GET.get('status', '').strip()
+        
+        # Base queryset
+        comments = Comment.objects.select_related('post', 'author').order_by('-created_at')
+        
+        # Apply search filter
+        if q:
+            comments = comments.filter(
+                Q(content__icontains=q) |
+                Q(post__title__icontains=q) |
+                Q(author__username__icontains=q) |
+                Q(author__email__icontains=q)
+            )
+        
+        # Apply status filter
+        if filter_status:
+            comments = comments.filter(status=filter_status)
+        
+        # Get comments (limit to 50 for performance)
+        comments = list(comments[:50])
+        
+        # Calculate statistics
+        from blog.models import Comment as CommentModel
+        stats = {
+            'pending_count': CommentModel.objects.filter(status='pending').count(),
+            'approved_count': CommentModel.objects.filter(status='approved').count(),
+            'rejected_count': CommentModel.objects.filter(status='rejected').count(),
+            'total_count': CommentModel.objects.count(),
+        }
+        
+        return render(request, 'cms/comments.html', {
+            'comments': comments,
+            'stats': stats,
+            'q': q,
+            'filter_status': filter_status,
+        })
+
+
+class CmsCommentApproveView(View):
+    """Approve a comment"""
+    @method_decorator(login_required)
+    def post(self, request):
+        if not request.user.is_staff:
+            return HttpResponseForbidden("Not allowed")
+        
+        from blog.models import Comment
+        comment_id = request.POST.get('comment_id')
+        
+        try:
+            comment = Comment.objects.get(id=comment_id)
+            comment.status = Comment.Status.APPROVED
+            comment.save(update_fields=['status', 'updated_at'])
+        except Comment.DoesNotExist:
+            pass
+        
+        return redirect('cms_comments')
+
+
+class CmsCommentRejectView(View):
+    """Reject a comment"""
+    @method_decorator(login_required)
+    def post(self, request):
+        if not request.user.is_staff:
+            return HttpResponseForbidden("Not allowed")
+        
+        from blog.models import Comment
+        comment_id = request.POST.get('comment_id')
+        
+        try:
+            comment = Comment.objects.get(id=comment_id)
+            comment.status = Comment.Status.REJECTED
+            comment.save(update_fields=['status', 'updated_at'])
+        except Comment.DoesNotExist:
+            pass
+        
+        return redirect('cms_comments')
+
+
+class CmsCommentDeleteView(View):
+    """Delete a comment"""
+    @method_decorator(login_required)
+    def post(self, request):
+        if not request.user.is_staff:
+            return HttpResponseForbidden("Not allowed")
+        
+        from blog.models import Comment
+        comment_id = request.POST.get('comment_id')
+        
+        try:
+            comment = Comment.objects.get(id=comment_id)
+            comment.delete()
+        except Comment.DoesNotExist:
+            pass
+        
+        return redirect('cms_comments')

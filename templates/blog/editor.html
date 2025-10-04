@@ -1,7 +1,10 @@
 {% extends 'base.html' %}{% block content %}
-<div class="container py-5" style="max-width: 900px;">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h3 class="mb-0">{% if post %}Edit Post{% else %}New Post{% endif %}</h3>
+<div class="container py-5" style="max-width: 900px; background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); color: #333;">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h3 class="mb-1">{% if post %}Edit Post{% else %}Create New Blog Post{% endif %}</h3>
+      <p class="text-muted mb-0 small">Fill in the details below to {% if post %}update{% else %}publish{% endif %} your blog post.</p>
+    </div>
     <a href="/blog/" class="btn btn-outline-secondary">Back to Blog</a>
   </div>
   {% if errors %}
@@ -62,7 +65,7 @@
             <option value="{{ c.id }}" {% if c.id in selected_category_ids %}selected{% endif %}>{{ c.name }}</option>
           {% endfor %}
         </select>
-        <div class="form-text">Hold Ctrl/Cmd to select multiple. If empty, create categories first.</div>
+        <div class="form-text">Hold Ctrl/Cmd to select multiple. {% if not categories %}<a href="/admin/blog/category/add/" target="_blank" class="text-decoration-underline">Create your first category</a>{% else %}Optional. <a href="/admin/blog/category/" target="_blank" class="text-decoration-underline">Manage categories</a>{% endif %}</div>
       </div>
       <div class="col-md-6">
         <label class="form-label">Tags</label>
@@ -71,10 +74,11 @@
             <option value="{{ t.id }}" {% if t.id in selected_tag_ids %}selected{% endif %}>{{ t.name }}</option>
           {% endfor %}
         </select>
+        <div class="form-text">Hold Ctrl/Cmd to select multiple. {% if not tags %}<a href="/admin/blog/tag/add/" target="_blank" class="text-decoration-underline">Create your first tag</a>{% else %}Optional. <a href="/admin/blog/tag/" target="_blank" class="text-decoration-underline">Manage tags</a>{% endif %}</div>
       </div>
     </div>
-    <div class="d-flex gap-2">
-      <button type="submit" class="btn btn-primary">Save</button>
+    <div class="d-flex gap-2 mt-4">
+      <button type="submit" class="btn btn-primary">Save Post</button>
       {% if post %}<a class="btn btn-outline-secondary" href="/blog/{{ post.slug }}/">View</a>{% endif %}
     </div>
   </form>

@@ -133,3 +133,23 @@
   .notes-carousel .carousel-item img{ max-height: 600px !important; }
 }
 
+/* CMS Payment Management Styles */
+.card {
+  background-color: rgba(255, 255, 255, 0.95);
+}
+
+.table {
+  color: #212529;
+}
+
+.table thead th {
+  background-color: rgba(129, 119, 111, 0.1);
+  border-bottom: 2px solid var(--ai-primary);
+  font-weight: 600;
+  color: #212529;
+}
+
+.table tbody tr:hover {
+  background-color: rgba(129, 119, 111, 0.05);
+}
+

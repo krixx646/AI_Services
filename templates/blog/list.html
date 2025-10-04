@@ -1,7 +1,7 @@
 {% extends 'base.html' %}{% block content %}
 <div class="container py-5">
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="mb-0">Blog</h1>
+    <h1 class="mb-0 text-white">Blog</h1>
     {% if request.user.is_authenticated and request.user.is_staff %}
     <a class="btn btn-primary" href="/cms/posts/new/">New Post</a>
     {% endif %}
@@ -25,13 +25,43 @@
     {% endfor %}
   </div>
   {% else %}
-  <p class="text-muted">No posts yet.</p>
+  <div class="text-center py-5">
+    <p class="text-white mb-3">No blog posts yet.</p>
+    {% if request.user.is_authenticated and request.user.is_staff %}
+    <a class="btn btn-light" href="/cms/posts/new/">Create Your First Post</a>
+    {% endif %}
+  </div>
   {% endif %}
   {% if request.user.is_authenticated and request.user.is_staff %}
-  <hr class="my-5">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h5 class="mb-0">Bot Management (staff)</h5>
-    <a class="btn btn-outline-secondary btn-sm" href="/cms/bots/">Open</a>
+  <hr class="my-5 border-light">
+  <div class="row g-3">
+    <div class="col-md-4">
+      <div class="card bg-transparent border-light text-white">
+        <div class="card-body">
+          <h5 class="card-title">💰 Payment Management</h5>
+          <p class="card-text">View all user payments, confirm transactions, and upload agent links.</p>
+          <a class="btn btn-light" href="/cms/payments/">Manage Payments</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card bg-transparent border-light text-white">
+        <div class="card-body">
+          <h5 class="card-title">🤖 Agent Management</h5>
+          <p class="card-text">Update agent statuses and URLs for all users.</p>
+          <a class="btn btn-light" href="/cms/bots/">Manage Agents</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card bg-transparent border-light text-white">
+        <div class="card-body">
+          <h5 class="card-title">💬 Comment Moderation</h5>
+          <p class="card-text">Review, approve, reject, or delete user comments on blog posts.</p>
+          <a class="btn btn-light" href="/cms/comments/">Moderate Comments</a>
+        </div>
+      </div>
+    </div>
   </div>
   {% endif %}
 </div>

@@ -1,8 +1,11 @@
 {% extends 'base.html' %}{% block content %}
 <div class="container py-5">
   <div class="d-flex justify-content-between align-items-center mb-3">
-    <h3 class="mb-0">Agent Management</h3>
-    <a href="/blog/" class="btn btn-outline-secondary btn-sm">Back</a>
+    <h3 class="mb-0 text-white">Agent Management</h3>
+    <div class="d-flex gap-2">
+      <a href="/cms/payments/" class="btn btn-outline-light btn-sm">Payment Management</a>
+      <a href="/blog/" class="btn btn-outline-light btn-sm">Back to Blog</a>
+    </div>
   </div>
   <form class="row g-2 mb-3" method="get">
     <div class="col-sm-6"><input class="form-control" type="text" name="q" value="{{ q }}" placeholder="Search by email or username"></div>
