@@ -21,9 +21,9 @@ pip install -r requirements.txt
 
 ```python
 # 🔐 Paystack API Keys (GET FROM: https://dashboard.paystack.com/#/settings/developer)
-os.environ['PAYSTACK_PUBLIC_KEY'] = 'pk_test_YOUR_KEY_HERE'  # ⬅️ REPLACE
-os.environ['PAYSTACK_SECRET_KEY'] = 'sk_test_YOUR_KEY_HERE'  # ⬅️ REPLACE
-os.environ['PAYSTACK_WEBHOOK_SECRET'] = 'whsec_YOUR_KEY_HERE'  # ⬅️ REPLACE
+os.environ['PAYSTACK_PUBLIC_KEY'] = 'YOUR_PAYSTACK_PUBLIC_KEY_HERE'  # ⬅️ REPLACE
+os.environ['PAYSTACK_SECRET_KEY'] = 'YOUR_PAYSTACK_SECRET_KEY_HERE'  # ⬅️ REPLACE
+os.environ['PAYSTACK_WEBHOOK_SECRET'] = 'YOUR_WEBHOOK_SECRET_HERE'  # ⬅️ REPLACE
 os.environ['PAYSTACK_ALLOWED_CURRENCIES'] = 'NGN'
 
 # Security for production
@@ -55,13 +55,13 @@ python manage.py seed_demo
 1. Login: https://dashboard.paystack.com/
 2. Go to: Settings → Developer/API
 3. Copy:
-   - Public Key (starts with `pk_test_` or `pk_live_`)
-   - Secret Key (starts with `sk_test_` or `sk_live_`)
+   - Public Key (starts with `pk_test_...` or `pk_live_...`)
+   - Secret Key (starts with `sk_test_...` or `sk_live_...`)
 
 ### **Webhook Secret:**
 1. Same page: Settings → Developer/API → Webhooks
 2. Add webhook URL: `https://krixx.pythonanywhere.com/api/payments/webhook/`
-3. Copy webhook secret (starts with `whsec_`)
+3. Copy webhook secret
 
 ---
 

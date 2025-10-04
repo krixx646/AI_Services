@@ -14,8 +14,8 @@ os.environ['CORS_ALLOWED_ORIGINS'] = 'https://krixx.pythonanywhere.com'
 # 🔐 Paystack API Keys
 # ⚠️ IMPORTANT: Replace these with your ACTUAL Paystack keys!
 # Get them from: https://dashboard.paystack.com/#/settings/developer
-os.environ['PAYSTACK_PUBLIC_KEY'] = 'pk_test_YOUR_PUBLIC_KEY_HERE'  # ⬅️ REPLACE THIS
-os.environ['PAYSTACK_SECRET_KEY'] = 'sk_test_YOUR_SECRET_KEY_HERE'  # ⬅️ REPLACE THIS
+os.environ['PAYSTACK_PUBLIC_KEY'] = 'YOUR_PAYSTACK_PUBLIC_KEY_HERE'  # ⬅️ REPLACE THIS
+os.environ['PAYSTACK_SECRET_KEY'] = 'YOUR_PAYSTACK_SECRET_KEY_HERE'  # ⬅️ REPLACE THIS
 os.environ['PAYSTACK_WEBHOOK_SECRET'] = 'YOUR_WEBHOOK_SECRET_HERE'  # ⬅️ REPLACE THIS
 
 # Currency settings
