@@ -18,14 +18,22 @@ from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from django.views.generic import TemplateView
+from django.contrib.sitemaps.views import sitemap
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 from .views import SearchView, PricingPageView
+from .sitemaps import StaticViewSitemap, BlogPostSitemap
 from accounts.views import LoginPageView, SignupPageView, ProfilePageView, LogoutView, DashboardView
 from django.conf import settings
 from django.conf.urls.static import static
 from django.conf import settings
 from django.http import JsonResponse
 from blog import views as blog_views
+
+# Sitemaps configuration
+sitemaps = {
+    'static': StaticViewSitemap,
+    'blog': BlogPostSitemap,
+}
 
 
 
@@ -97,7 +105,7 @@ urlpatterns = [
     
     # SEO files
     path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type='text/plain'), name='robots'),
-    path('sitemap.xml', TemplateView.as_view(template_name='sitemap.xml', content_type='application/xml'), name='sitemap'),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     
     # Google Search Console Verification
     path('google61efa2e5a317b80d.html', TemplateView.as_view(template_name='google61efa2e5a317b80d.html', content_type='text/html'), name='google_verification'),
