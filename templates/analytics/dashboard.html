@@ -1,0 +1,472 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid py-4" style="background: linear-gradient(135deg, #81776F 0%, #6B5F56 100%); min-height: 100vh;">
+  <div class="container">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h2 class="text-white fw-bold mb-1">📊 Analytics Dashboard</h2>
+        <p class="text-white-50 mb-0">Real-time website statistics and insights</p>
+      </div>
+      <div class="d-flex gap-2">
+        <a href="/cms/payments/" class="btn btn-light btn-sm">💰 Payments</a>
+        <a href="/admin/" class="btn btn-outline-light btn-sm">⚙️ Admin</a>
+      </div>
+    </div>
+
+    <!-- Key Metrics Cards -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <p class="text-muted mb-1 small">Today's Views</p>
+                <h3 class="mb-0 fw-bold">{{ today_views|default:0 }}</h3>
+              </div>
+              <div class="bg-primary bg-opacity-10 p-2 rounded">
+                <i class="bi bi-eye-fill text-primary" style="font-size: 1.5rem;"></i>
+              </div>
+            </div>
+            {% if views_growth >= 0 %}
+            <p class="mb-0 small text-success">
+              <i class="bi bi-arrow-up"></i> +{{ views_growth }}% from yesterday
+            </p>
+            {% else %}
+            <p class="mb-0 small text-danger">
+              <i class="bi bi-arrow-down"></i> {{ views_growth }}% from yesterday
+            </p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <p class="text-muted mb-1 small">Today's Visitors</p>
+                <h3 class="mb-0 fw-bold">{{ today_visitors|default:0 }}</h3>
+              </div>
+              <div class="bg-success bg-opacity-10 p-2 rounded">
+                <i class="bi bi-people-fill text-success" style="font-size: 1.5rem;"></i>
+              </div>
+            </div>
+            {% if visitors_growth >= 0 %}
+            <p class="mb-0 small text-success">
+              <i class="bi bi-arrow-up"></i> +{{ visitors_growth }}% from yesterday
+            </p>
+            {% else %}
+            <p class="mb-0 small text-danger">
+              <i class="bi bi-arrow-down"></i> {{ visitors_growth }}% from yesterday
+            </p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <p class="text-muted mb-1 small">This Week</p>
+                <h3 class="mb-0 fw-bold">{{ week_views|default:0 }}</h3>
+              </div>
+              <div class="bg-warning bg-opacity-10 p-2 rounded">
+                <i class="bi bi-calendar-week-fill text-warning" style="font-size: 1.5rem;"></i>
+              </div>
+            </div>
+            <p class="mb-0 small text-muted">{{ week_visitors|default:0 }} unique visitors</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <p class="text-muted mb-1 small">This Month</p>
+                <h3 class="mb-0 fw-bold">{{ month_views|default:0 }}</h3>
+              </div>
+              <div class="bg-info bg-opacity-10 p-2 rounded">
+                <i class="bi bi-calendar-month-fill text-info" style="font-size: 1.5rem;"></i>
+              </div>
+            </div>
+            <p class="mb-0 small text-muted">{{ month_visitors|default:0 }} unique visitors</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Row 1 -->
+    <div class="row g-3 mb-4">
+      <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title fw-bold mb-3">📈 Traffic Trend (Last 30 Days)</h5>
+            <canvas id="trafficChart" height="80"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <h5 class="card-title fw-bold mb-3">🖥️ Device Breakdown</h5>
+            <canvas id="deviceChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Row 2 -->
+    <div class="row g-3 mb-4">
+      <div class="col-lg-6">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title fw-bold mb-3">🌐 Browser Usage</h5>
+            <canvas id="browserChart" height="60"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title fw-bold mb-3">⏰ Hourly Traffic (Last 24h)</h5>
+            <canvas id="hourlyChart" height="60"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Geographic Stats -->
+    <div class="row g-3 mb-4">
+      <div class="col-lg-6">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title fw-bold mb-3">🌍 Top Countries (Last 30 Days)</h5>
+            <div class="table-responsive">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th>Country</th>
+                    <th class="text-end">Visitors</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for country in top_countries %}
+                  <tr>
+                    <td>
+                      <span class="me-2">{{ country.country_code|default:"🌐" }}</span>
+                      {{ country.country }}
+                    </td>
+                    <td class="text-end fw-bold">{{ country.count }}</td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="2" class="text-center text-muted">
+                      <i class="bi bi-globe"></i> No geographic data yet
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title fw-bold mb-3">🏙️ Top Cities (Last 30 Days)</h5>
+            <div class="table-responsive">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th>City</th>
+                    <th class="text-end">Visitors</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for city in top_cities %}
+                  <tr>
+                    <td>
+                      <i class="bi bi-geo-alt-fill text-danger"></i>
+                      {{ city.city }}, {{ city.country }}
+                    </td>
+                    <td class="text-end fw-bold">{{ city.count }}</td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="2" class="text-center text-muted">
+                      <i class="bi bi-inbox"></i> No city data yet
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Pages and Referrers -->
+    <div class="row g-3 mb-4">
+      <div class="col-lg-6">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title fw-bold mb-3">📄 Top Pages (Last 30 Days)</h5>
+            <div class="table-responsive">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th>Page</th>
+                    <th class="text-end">Views</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for page in top_pages %}
+                  <tr>
+                    <td>
+                      <div class="text-truncate" style="max-width: 300px;">
+                        {{ page.page_title|default:page.path }}
+                      </div>
+                      <small class="text-muted">{{ page.path }}</small>
+                    </td>
+                    <td class="text-end fw-bold">{{ page.views }}</td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="2" class="text-center text-muted">No data yet</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title fw-bold mb-3">🔗 Top Referrers</h5>
+            <div class="table-responsive">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th>Source</th>
+                    <th class="text-end">Visits</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for ref in top_referrers %}
+                  <tr>
+                    <td>
+                      <i class="bi bi-link-45deg text-primary"></i>
+                      {{ ref.referrer_domain }}
+                    </td>
+                    <td class="text-end fw-bold">{{ ref.count }}</td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="2" class="text-center text-muted">
+                      <i class="bi bi-inbox"></i> No external referrers yet
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Events -->
+    {% if recent_events %}
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body">
+        <h5 class="card-title fw-bold mb-3">⚡ Recent Events</h5>
+        <div class="table-responsive">
+          <table class="table table-sm table-hover">
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Event</th>
+                <th>User</th>
+                <th>Page</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for event in recent_events %}
+              <tr>
+                <td>
+                  <span class="badge bg-primary">{{ event.get_event_type_display }}</span>
+                </td>
+                <td>{{ event.event_name }}</td>
+                <td>
+                  {% if event.user %}
+                    {{ event.user.username }}
+                  {% else %}
+                    <span class="text-muted">Anonymous</span>
+                  {% endif %}
+                </td>
+                <td>
+                  <small class="text-muted">{{ event.page_url|truncatechars:50 }}</small>
+                </td>
+                <td>
+                  <small class="text-muted">{{ event.timestamp|date:"M d, H:i" }}</small>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- All Time Stats -->
+    <div class="row g-3">
+      <div class="col-md-4">
+        <div class="card border-0 shadow-sm text-center">
+          <div class="card-body">
+            <i class="bi bi-graph-up text-primary" style="font-size: 3rem;"></i>
+            <h3 class="mt-3 mb-1 fw-bold">{{ total_views|default:0 }}</h3>
+            <p class="text-muted mb-0">Total Page Views</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card border-0 shadow-sm text-center">
+          <div class="card-body">
+            <i class="bi bi-people text-success" style="font-size: 3rem;"></i>
+            <h3 class="mt-3 mb-1 fw-bold">{{ total_visitors|default:0 }}</h3>
+            <p class="text-muted mb-0">Total Unique Visitors</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card border-0 shadow-sm text-center">
+          <div class="card-body">
+            <i class="bi bi-lightning text-warning" style="font-size: 3rem;"></i>
+            <h3 class="mt-3 mb-1 fw-bold">{{ total_events|default:0 }}</h3>
+            <p class="text-muted mb-0">Total Events Tracked</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+// Traffic Trend Chart
+const trafficCtx = document.getElementById('trafficChart').getContext('2d');
+new Chart(trafficCtx, {
+  type: 'line',
+  data: {
+    labels: [{% for day in daily_traffic %}'{{ day.date|date:"M d" }}',{% endfor %}],
+    datasets: [{
+      label: 'Page Views',
+      data: [{% for day in daily_traffic %}{{ day.views }},{% endfor %}],
+      borderColor: 'rgb(75, 192, 192)',
+      backgroundColor: 'rgba(75, 192, 192, 0.1)',
+      tension: 0.4,
+      fill: true
+    }, {
+      label: 'Unique Visitors',
+      data: [{% for day in daily_traffic %}{{ day.visitors }},{% endfor %}],
+      borderColor: 'rgb(153, 102, 255)',
+      backgroundColor: 'rgba(153, 102, 255, 0.1)',
+      tension: 0.4,
+      fill: true
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'top' }
+    },
+    scales: {
+      y: { beginAtZero: true }
+    }
+  }
+});
+
+// Device Chart
+const deviceCtx = document.getElementById('deviceChart').getContext('2d');
+new Chart(deviceCtx, {
+  type: 'doughnut',
+  data: {
+    labels: [{% for device in device_stats %}'{{ device.device }}',{% endfor %}],
+    datasets: [{
+      data: [{% for device in device_stats %}{{ device.count }},{% endfor %}],
+      backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'bottom' }
+    }
+  }
+});
+
+// Browser Chart
+const browserCtx = document.getElementById('browserChart').getContext('2d');
+new Chart(browserCtx, {
+  type: 'bar',
+  data: {
+    labels: [{% for browser in browser_stats %}'{{ browser.browser }}',{% endfor %}],
+    datasets: [{
+      label: 'Users',
+      data: [{% for browser in browser_stats %}{{ browser.count }},{% endfor %}],
+      backgroundColor: 'rgba(54, 162, 235, 0.5)',
+      borderColor: 'rgba(54, 162, 235, 1)',
+      borderWidth: 1
+    }]
+  },
+  options: {
+    responsive: true,
+    scales: {
+      y: { beginAtZero: true }
+    }
+  }
+});
+
+// Hourly Chart
+const hourlyCtx = document.getElementById('hourlyChart').getContext('2d');
+new Chart(hourlyCtx, {
+  type: 'bar',
+  data: {
+    labels: [{% for hour in hourly_traffic %}'{{ hour.hour|date:"H:00" }}',{% endfor %}],
+    datasets: [{
+      label: 'Views',
+      data: [{% for hour in hourly_traffic %}{{ hour.views }},{% endfor %}],
+      backgroundColor: 'rgba(255, 159, 64, 0.5)',
+      borderColor: 'rgba(255, 159, 64, 1)',
+      borderWidth: 1
+    }]
+  },
+  options: {
+    responsive: true,
+    scales: {
+      y: { beginAtZero: true }
+    }
+  }
+});
+</script>
+{% endblock %}
