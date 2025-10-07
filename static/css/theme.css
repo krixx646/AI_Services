@@ -189,17 +189,20 @@
 }
 
 /* ========================================
-   MOBILE OPTIMIZATION
+   MOBILE RESPONSIVE DESIGN
+   Following Best Practices for 2025
    ======================================== */
 
-/* Base Mobile Improvements */
-@media (max-width: 767px) {
-  /* Typography - Improved readability on small screens */
+/* Mobile-First Base Styles */
+@media (max-width: 991px) {
+  /* Typography - Prevent zoom on input focus (iOS fix) */
   body {
-    font-size: 16px !important; /* Prevent zoom on input focus */
-    line-height: 1.6;
+    font-size: 16px !important;
+    -webkit-text-size-adjust: 100%;
+    -moz-text-size-adjust: 100%;
   }
   
+  /* Headings - Scalable & Readable */
   h1, .display-4 {
     font-size: 2rem !important;
     line-height: 1.2;
@@ -218,37 +221,105 @@
     font-size: 1.1rem !important;
   }
   
-  /* Hero Section Mobile */
-  .hero-dark .display-4 {
-    font-size: 1.75rem !important;
-    margin-bottom: 1rem !important;
-  }
-  
-  .hero-dark .lead {
-    font-size: 1rem !important;
-    margin-bottom: 1.5rem !important;
-  }
-  
-  /* Buttons - Touch-friendly sizing */
+  /* Touch-Friendly Buttons (48px minimum) */
   .btn {
-    min-height: 48px; /* Apple/Google recommended minimum */
-    padding: 12px 20px !important;
-    font-size: 16px !important; /* Prevent zoom */
+    min-height: 48px;
+    padding: 12px 24px !important;
+    font-size: 16px !important;
   }
   
   .btn-lg {
     min-height: 54px;
-    padding: 14px 24px !important;
-    font-size: 16px !important;
+    padding: 14px 28px !important;
   }
   
   .btn-sm {
     min-height: 44px;
-    padding: 10px 16px !important;
-    font-size: 14px !important;
+    padding: 10px 20px !important;
+  }
+  
+  /* Form Controls - Touch-Friendly */
+  .form-control, .form-select {
+    min-height: 48px;
+    font-size: 16px !important; /* Prevent iOS zoom */
+    padding: 12px 16px !important;
+  }
+  
+  textarea.form-control {
+    min-height: 120px;
   }
   
   /* Spacing Adjustments */
+  .py-5 {
+    padding-top: 2.5rem !important;
+    padding-bottom: 2.5rem !important;
+  }
+  
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  /* Navbar Mobile */
+  .navbar-brand img {
+    height: 36px !important;
+  }
+  
+  .navbar-collapse {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .nav-link {
+    padding: 0.75rem 0 !important;
+    font-size: 1.1rem !important;
+  }
+  
+  /* Dropdown Touch-Friendly */
+  .dropdown-item {
+    min-height: 44px;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  /* Images - Fluid & Fast */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  /* Cards */
+  .card-body {
+    padding: 1.25rem !important;
+  }
+  
+  /* Tables - Scrollable */
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Remove tap delay */
+  a, button, input, textarea, select {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(129, 119, 111, 0.2);
+  }
+}
+
+/* Small Mobile (< 768px) */
+@media (max-width: 767px) {
+  /* Even smaller headings */
+  h1, .display-4 {
+    font-size: 1.75rem !important;
+  }
+  
+  h2 {
+    font-size: 1.4rem !important;
+  }
+  
+  /* Compact spacing */
   .py-5 {
     padding-top: 2rem !important;
     padding-bottom: 2rem !important;
@@ -259,206 +330,45 @@
     padding-bottom: 1.5rem !important;
   }
   
-  .mb-5 {
-    margin-bottom: 2rem !important;
-  }
-  
-  .mb-4 {
-    margin-bottom: 1.5rem !important;
-  }
-  
-  /* Container Padding */
-  .container {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-  
-  /* Images - Responsive & Fast Loading */
-  img {
-    max-width: 100%;
-    height: auto;
-  }
-  
-  .img-fluid {
-    width: 100%;
-    height: auto;
-  }
-  
-  /* Cards */
-  .card {
-    margin-bottom: 1rem;
-  }
-  
-  .card-body {
-    padding: 1.25rem !important;
-  }
-  
-  /* Forms - Touch-friendly */
-  .form-control {
-    font-size: 16px !important; /* Prevent zoom on focus */
-    min-height: 48px;
-    padding: 12px 16px !important;
-  }
-  
-  .form-select {
-    font-size: 16px !important;
-    min-height: 48px;
-  }
-  
-  textarea.form-control {
-    min-height: 120px;
-  }
-  
-  /* Tables - Scrollable on mobile */
-  .table-responsive {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  
-  .table {
-    font-size: 0.875rem;
-  }
-  
-  /* Navbar Mobile */
-  .navbar-brand {
-    font-size: 1.25rem;
-  }
-  
-  .navbar-brand img {
-    height: 32px !important;
-    margin-right: 8px !important;
-  }
-  
-  .navbar-collapse {
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-  }
-  
-  .nav-item {
-    padding: 0.5rem 0;
-  }
-  
-  .nav-link {
-    font-size: 1.1rem !important;
-    padding: 0.5rem 0 !important;
-  }
-  
-  /* Dropdown Mobile */
-  .dropdown-menu {
-    font-size: 1rem;
-  }
-  
-  .dropdown-item {
-    padding: 0.75rem 1rem;
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-  }
-  
-  /* Gap Adjustments */
-  .gap-3 {
-    gap: 0.75rem !important;
-  }
-  
-  .gap-5 {
-    gap: 1.5rem !important;
-  }
-  
-  /* Flex Direction - Stack on mobile */
-  .d-flex.flex-wrap {
+  /* Stack elements */
+  .d-flex.gap-3.flex-wrap {
     flex-direction: column;
   }
   
-  /* CTA Buttons - Full width on mobile */
-  .hero-dark .d-flex.gap-3 {
-    flex-direction: column;
-    width: 100%;
-  }
-  
+  /* Hero CTA Full Width */
   .hero-dark .btn {
     width: 100%;
-    text-align: center;
+    margin-bottom: 0.75rem;
   }
   
-  /* Footer Mobile */
+  /* Footer Stack */
   footer .d-flex {
     flex-direction: column;
     text-align: center;
+    gap: 1rem;
   }
   
-  footer .gap-3 {
-    margin-top: 1rem;
-    flex-direction: column;
+  /* Blog Images */
+  #articleContent img {
+    max-width: 100% !important;
+    height: auto !important;
+    margin: 1rem auto;
   }
   
-  footer .social-icons {
-    justify-content: center;
-  }
-  
-  /* Botpress CTA Mobile - Already handled but ensuring */
+  /* Botpress CTA Mobile */
   #bp-custom-cta {
     bottom: 20px !important;
     right: 10px !important;
     left: 10px !important;
-    width: auto !important;
   }
   
   #bp-cta-button {
     width: 100%;
     justify-content: center;
-    padding: 14px 20px !important;
-    font-size: 15px !important;
-  }
-  
-  /* Blog Post Content */
-  #articleContent {
-    font-size: 1rem;
-    line-height: 1.7;
-  }
-  
-  #articleContent h2 {
-    font-size: 1.4rem !important;
-    margin-top: 1.5rem;
-  }
-  
-  #articleContent h3 {
-    font-size: 1.2rem !important;
-  }
-  
-  #articleContent img {
-    max-width: 100% !important;
-    height: auto !important;
-    margin: 1rem 0;
-  }
-  
-  /* Blog List Cards */
-  .blog-card {
-    margin-bottom: 1.5rem;
-  }
-  
-  .blog-card .card-img-top {
-    max-height: 200px !important;
-  }
-  
-  /* Analytics Dashboard Mobile */
-  .analytics-card {
-    margin-bottom: 1rem;
-  }
-  
-  /* Comments Section */
-  .comment-item {
-    padding: 1rem;
-    margin-bottom: 1rem;
-  }
-  
-  /* Pricing Cards */
-  .pricing-card {
-    margin-bottom: 2rem;
   }
 }
 
-/* Small Mobile (< 576px) */
+/* Extra Small Mobile (< 576px) */
 @media (max-width: 575px) {
   h1, .display-4 {
     font-size: 1.5rem !important;
@@ -468,11 +378,6 @@
     font-size: 1.3rem !important;
   }
   
-  .hero-dark .display-4 {
-    font-size: 1.5rem !important;
-  }
-  
-  /* Even smaller spacing on tiny screens */
   .py-5 {
     padding-top: 1.5rem !important;
     padding-bottom: 1.5rem !important;
@@ -482,14 +387,9 @@
     padding-left: 0.75rem;
     padding-right: 0.75rem;
   }
-  
-  /* Single column for everything */
-  .row > * {
-    margin-bottom: 1rem;
-  }
 }
 
-/* Tablet Optimization (768px - 991px) */
+/* Tablet (768px - 991px) */
 @media (min-width: 768px) and (max-width: 991px) {
   .display-4 {
     font-size: 2.5rem !important;
@@ -498,66 +398,18 @@
   h2 {
     font-size: 1.75rem !important;
   }
-  
-  /* Touch targets still important on tablets */
-  .btn {
-    min-height: 48px;
-  }
-  
-  .form-control {
-    min-height: 48px;
-  }
 }
 
-/* Performance Optimizations */
-@media (max-width: 767px) {
-  /* Smooth scrolling */
-  html {
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-  }
-  
-  /* Prevent text size adjust on orientation change */
-  body {
-    -webkit-text-size-adjust: 100%;
-    -moz-text-size-adjust: 100%;
-    -ms-text-size-adjust: 100%;
-    text-size-adjust: 100%;
-  }
-  
-  /* Optimize tap highlights */
-  a, button, input, textarea, select {
-    -webkit-tap-highlight-color: rgba(129, 119, 111, 0.3);
-  }
-  
-  /* Remove delays on mobile clicks */
-  a, button {
-    touch-action: manipulation;
-  }
-}
-
-/* Landscape Mobile */
+/* Landscape Mobile - Reduce vertical padding */
 @media (max-width: 767px) and (orientation: landscape) {
-  .hero-dark {
-    padding-top: 2rem !important;
-    padding-bottom: 2rem !important;
+  .py-5 {
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
   }
   
   .navbar {
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
-  }
-}
-
-/* Print Styles (Bonus) */
-@media print {
-  .navbar, footer, #bp-custom-cta, .btn {
-    display: none !important;
-  }
-  
-  body {
-    background: white !important;
-    color: black !important;
   }
 }
 
