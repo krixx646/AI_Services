@@ -1,24 +1,5 @@
 console.log("site.js loaded");
 
-// Enhanced navbar visibility on scroll
-(function() {
-  var navbar = document.querySelector('.navbar');
-  var lastScrollTop = 0;
-  
-  window.addEventListener('scroll', function() {
-    var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    
-    // Add 'scrolled' class when user scrolls down
-    if (scrollTop > 50) {
-      navbar.classList.add('scrolled');
-    } else {
-      navbar.classList.remove('scrolled');
-    }
-    
-    lastScrollTop = scrollTop;
-  });
-})();
-
 (function loadBotpressDemo() {
   try {
     fetch('/api/demo/info/')
