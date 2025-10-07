@@ -12,7 +12,7 @@
     <div class="col-md-6">
       <div class="card h-100">
         {% if p.cover_image %}
-        <img src="{{ p.cover_image.url }}" class="card-img-top" alt="{{ p.title }}" style="max-height:200px;object-fit:cover;">
+        <img src="{{ p.cover_image.url }}" class="card-img-top" alt="{{ p.title }}" style="max-height:200px;object-fit:cover;" loading="lazy" onerror="this.onerror=null;this.src='/static/img/pigent.png';">
         {% endif %}
         <div class="card-body">
           <h5 class="card-title"><a class="text-decoration-none" href="/blog/{{ p.slug }}/">{{ p.title }}</a></h5>

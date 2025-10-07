@@ -68,13 +68,20 @@
         <div class="form-text">Hold Ctrl/Cmd to select multiple. {% if not categories %}<a href="/admin/blog/category/add/" target="_blank" class="text-decoration-underline">Create your first category</a>{% else %}Optional. <a href="/admin/blog/category/" target="_blank" class="text-decoration-underline">Manage categories</a>{% endif %}</div>
       </div>
       <div class="col-md-6">
-        <label class="form-label">Tags</label>
+        <label class="form-label">Tags (SEO Keywords)</label>
         <select name="tags" class="form-select" multiple size="6">
           {% for t in tags %}
             <option value="{{ t.id }}" {% if t.id in selected_tag_ids %}selected{% endif %}>{{ t.name }}</option>
           {% endfor %}
         </select>
-        <div class="form-text">Hold Ctrl/Cmd to select multiple. {% if not tags %}<a href="/admin/blog/tag/add/" target="_blank" class="text-decoration-underline">Create your first tag</a>{% else %}Optional. <a href="/admin/blog/tag/" target="_blank" class="text-decoration-underline">Manage tags</a>{% endif %}</div>
+        <div class="form-text">
+          <strong>💡 SEO Tip:</strong> Select 5-10 relevant tags. 
+          {% if not tags %}
+            <a href="/admin/blog/tag/add/" target="_blank" class="text-decoration-underline">Create tags</a> or run <code>python manage.py populate_seo_tags</code>
+          {% else %}
+            <a href="/admin/blog/tag/" target="_blank" class="text-decoration-underline">Manage tags</a>
+          {% endif %}
+        </div>
       </div>
     </div>
     <div class="d-flex gap-2 mt-4">

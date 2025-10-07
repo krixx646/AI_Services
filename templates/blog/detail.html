@@ -1,4 +1,33 @@
-{% extends 'base.html' %}{% block content %}
+{% extends 'base.html' %}
+{% block title %}{{ post.title }} - Pi gent Blog{% endblock %}
+{% block extra_head %}
+<!-- SEO Meta Tags -->
+<meta name="description" content="{{ post.excerpt|default:post.content|truncatewords:30|striptags }}">
+<meta name="keywords" content="{% for tag in post.tags.all %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}">
+<meta name="author" content="{{ post.author.get_full_name|default:post.author.username }}">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="article">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+<meta property="og:title" content="{{ post.title }}">
+<meta property="og:description" content="{{ post.excerpt|default:post.content|truncatewords:30|striptags }}">
+{% if post.cover_image %}<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ post.cover_image.url }}">{% endif %}
+<meta property="article:published_time" content="{{ post.published_at|date:'c' }}">
+<meta property="article:modified_time" content="{{ post.updated_at|date:'c' }}">
+<meta property="article:author" content="{{ post.author.get_full_name|default:post.author.username }}">
+{% for tag in post.tags.all %}<meta property="article:tag" content="{{ tag.name }}">{% endfor %}
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="{{ request.build_absolute_uri }}">
+<meta name="twitter:title" content="{{ post.title }}">
+<meta name="twitter:description" content="{{ post.excerpt|default:post.content|truncatewords:30|striptags }}">
+{% if post.cover_image %}<meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{{ post.cover_image.url }}">{% endif %}
+
+<!-- Canonical URL -->
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
+{% endblock %}
+{% block content %}
 <div class="container py-5" style="max-width: 900px;">
   <p><a href="/blog/" class="text-decoration-none text-white">← Back to Blog</a></p>
   
@@ -27,12 +56,43 @@
     </div>
     
     {% if post.cover_image %}
-    <img src="{{ post.cover_image.url }}" alt="{{ post.title }}" class="img-fluid rounded mb-4" style="max-height: 400px; width: 100%; object-fit: cover;">
+    <img src="{{ post.cover_image.url }}" alt="{{ post.title }}" class="img-fluid rounded mb-4" style="max-height: 400px; width: 100%; object-fit: cover;" loading="lazy" onerror="this.style.display='none';">
     {% endif %}
     
     <div class="content" id="articleContent" style="line-height: 1.8; font-size: 1.05rem;">
       {{ post.content|safe }}
     </div>
+    
+    <!-- Fix inline images to be responsive -->
+    <style>
+      #articleContent img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 20px auto;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      }
+      #articleContent p {
+        margin-bottom: 1.2em;
+      }
+      #articleContent h1, #articleContent h2, #articleContent h3 {
+        margin-top: 1.5em;
+        margin-bottom: 0.8em;
+        font-weight: 600;
+      }
+      #articleContent ul, #articleContent ol {
+        margin-bottom: 1.2em;
+        padding-left: 2em;
+      }
+      #articleContent blockquote {
+        border-left: 4px solid #81776F;
+        padding-left: 20px;
+        margin: 20px 0;
+        font-style: italic;
+        color: #666;
+      }
+    </style>
   </div>
   {% if can_manage %}
   <div class="mt-4">
