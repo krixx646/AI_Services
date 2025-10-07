@@ -1,0 +1,29 @@
+:root{--brand:#0d6efd}
+main{min-height:100vh}
+.border{border-color:#e5e7eb!important}
+.price-card{border:1px solid #4c5b69;border-radius:.75rem;padding:1.25rem 1.25rem;margin-bottom:1rem;background:#b6afaf}
+.price-card .title{font-weight:600}
+.price-amount{font-weight:700;font-size:1.25rem}
+.price-badge{background:var(--bs-primary);color:#fff;border-radius:999px;padding:.25rem .75rem;font-weight:600}
+.muted{color:#6c757d}
+
+/* New hero/cards layout */
+.pricing-hero h1{font-weight:800;letter-spacing:.2px}
+.plan-card{border:1px solid #e5e7eb;border-radius:1rem;padding:1.75rem;background:#fff;box-shadow:0 6px 18px rgba(16,24,40,.08)}
+.plan-card.emphasis{border-color:#0c2346;box-shadow:0 8px 24px rgba(13,110,253,.25)}
+.btn-cta{background:#0d6efd;color:#fff;border-radius:999px;padding:.6rem 1.25rem;font-weight:700}
+.btn-cta:hover{background:#0b5ed7;color:#fff}
+.plan-card .plan-title{font-weight:700;font-size:1.25rem;margin-bottom:.25rem}
+.plan-card .plan-sub{color:#6c757d;font-size:.95rem}
+.plan-card .plan-price{font-size:2.25rem;font-weight:800}
+.plan-card .plan-price small{font-size:.9rem;color:#6c757d;font-weight:500}
+.plan-card .feature{display:flex;gap:.5rem;margin:.4rem 0;color:#495057}
+.plan-card .feature::before{content:"✓";color:#0d3f28;font-weight:800}
+
+/* Currency tabs */
+.currency-tabs .nav-link{border-radius:999px;padding:.375rem 1rem}
+.currency-tabs .nav-link.active{background:var(--brand);color:#fff}
+
+/* FAQ */
+.faq-item{border-bottom:1px solid #e9ecef;padding:1rem 0}
+.faq-item:last-child{border-bottom:none}

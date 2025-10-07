@@ -112,6 +112,9 @@ urlpatterns = [
     
     # Analytics
     path('analytics/', include('analytics.urls')),
+    
+    # Test page for hamburger menu
+    path('test-hamburger/', TemplateView.as_view(template_name='test_hamburger.html'), name='test_hamburger'),
 ]
 
 if settings.DEBUG:
