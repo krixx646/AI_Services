@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+
+{% block title %}Exclude from Analytics - Pi gent{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <!-- Back Navigation -->
+  <div class="mb-4">
+    <a href="javascript:history.back()" class="text-decoration-none text-white">
+      <i class="bi bi-arrow-left me-2"></i>Go Back
+    </a>
+  </div>
+  
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-sm">
+        <div class="card-body p-5 text-center">
+          <div id="status-container">
+            {% if excluded %}
+            <!-- Already Excluded -->
+            <div class="mb-4">
+              <i class="bi bi-shield-check text-success" style="font-size: 4rem;"></i>
+            </div>
+            <h2 class="mb-3">✅ Analytics Exclusion Active</h2>
+            <p class="text-muted mb-4">
+              Your visits are <strong>NOT being tracked</strong> in the analytics dashboard.
+            </p>
+            <div class="alert alert-info">
+              <i class="bi bi-info-circle me-2"></i>
+              This setting will persist until you clear your browser cookies.
+            </div>
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mt-4">
+              <a href="/" class="btn btn-primary" style="background-color: #81776F; border-color: #81776F;">
+                <i class="bi bi-house-door me-2"></i>Go to Homepage
+              </a>
+              <a href="/analytics/" class="btn btn-outline-primary" style="border-color: #81776F; color: #81776F;">
+                <i class="bi bi-graph-up me-2"></i>View Analytics
+              </a>
+              <button onclick="removeExclusion()" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-clockwise me-2"></i>Re-enable Tracking
+              </button>
+            </div>
+            {% else %}
+            <!-- Not Excluded -->
+            <div class="mb-4">
+              <i class="bi bi-bar-chart text-primary" style="font-size: 4rem;"></i>
+            </div>
+            <h2 class="mb-3">📊 Analytics Tracking Active</h2>
+            <p class="text-muted mb-4">
+              Your visits are currently being counted in the analytics dashboard.
+            </p>
+            <div class="alert alert-warning">
+              <i class="bi bi-exclamation-triangle me-2"></i>
+              As a site administrator, you may want to exclude your own visits from analytics.
+            </div>
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mt-4">
+              <button onclick="setExclusion()" class="btn btn-primary" style="background-color: #81776F; border-color: #81776F;">
+                <i class="bi bi-shield-check me-2"></i>Exclude My Visits
+              </button>
+              <a href="/" class="btn btn-outline-secondary">
+                <i class="bi bi-house-door me-2"></i>Go to Homepage
+              </a>
+              <a href="/analytics/" class="btn btn-outline-primary" style="border-color: #81776F; color: #81776F;">
+                <i class="bi bi-graph-up me-2"></i>View Analytics
+              </a>
+            </div>
+            {% endif %}
+          </div>
+
+          <!-- How It Works -->
+          <div class="mt-5 pt-4 border-top text-start">
+            <h5 class="mb-3">ℹ️ How This Works</h5>
+            <ul class="text-muted small">
+              <li class="mb-2">
+                <strong>Cookie-based:</strong> Sets a cookie in your browser to mark you as excluded
+              </li>
+              <li class="mb-2">
+                <strong>Browser-specific:</strong> Only applies to this browser. Use on all devices you use.
+              </li>
+              <li class="mb-2">
+                <strong>Persistent:</strong> Lasts until you clear cookies or manually re-enable tracking
+              </li>
+              <li class="mb-2">
+                <strong>Auto-excluded:</strong> Staff users are automatically excluded when logged in
+              </li>
+            </ul>
+          </div>
+
+          <!-- Alternative Methods -->
+          <div class="mt-4 text-start">
+            <h5 class="mb-3">🔧 Other Exclusion Methods</h5>
+            <div class="accordion" id="methodsAccordion">
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#method1">
+                    Method 1: URL Parameter (Quick Test)
+                  </button>
+                </h2>
+                <div id="method1" class="accordion-collapse collapse" data-bs-parent="#methodsAccordion">
+                  <div class="accordion-body">
+                    <p>Add <code>?exclude_analytics=true</code> to any URL:</p>
+                    <code class="d-block p-2 bg-light rounded">
+                      https://krixx.pythonanywhere.com/?exclude_analytics=true
+                    </code>
+                    <p class="mt-2 mb-0 text-muted small">
+                      <i class="bi bi-info-circle me-1"></i>
+                      Only excludes that specific page load. Not persistent.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#method2">
+                    Method 2: Staff Login (Automatic)
+                  </button>
+                </h2>
+                <div id="method2" class="accordion-collapse collapse" data-bs-parent="#methodsAccordion">
+                  <div class="accordion-body">
+                    <p>When logged in as staff, you're automatically excluded.</p>
+                    <p class="mb-0 text-muted small">
+                      <i class="bi bi-check-circle text-success me-1"></i>
+                      No setup needed. Works across all devices while logged in.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#method3">
+                    Method 3: IP Address (Advanced)
+                  </button>
+                </h2>
+                <div id="method3" class="accordion-collapse collapse" data-bs-parent="#methodsAccordion">
+                  <div class="accordion-body">
+                    <p>For static IP addresses, you can exclude by IP in settings.</p>
+                    <p class="mb-2">Your current IP: <code id="user-ip">Loading...</code></p>
+                    <p class="text-muted small mb-0">
+                      <i class="bi bi-info-circle me-1"></i>
+                      Contact developer to configure IP-based exclusion.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Get current IP
+fetch('https://api.ipify.org?format=json')
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById('user-ip').textContent = data.ip;
+  })
+  .catch(() => {
+    document.getElementById('user-ip').textContent = 'Unable to detect';
+  });
+
+// Set exclusion cookie
+function setExclusion() {
+  // Set cookie for 10 years
+  const expires = new Date();
+  expires.setFullYear(expires.getFullYear() + 10);
+  document.cookie = `exclude_analytics=true; expires=${expires.toUTCString()}; path=/; SameSite=Lax`;
+  
+  // Reload page to show updated status
+  window.location.reload();
+}
+
+// Remove exclusion cookie
+function removeExclusion() {
+  // Delete cookie
+  document.cookie = 'exclude_analytics=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+  
+  // Reload page to show updated status
+  window.location.reload();
+}
+</script>
+
+{% endblock %}
+

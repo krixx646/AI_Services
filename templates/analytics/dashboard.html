@@ -11,6 +11,9 @@
         <p class="text-white-50 mb-0">Real-time website statistics and insights</p>
       </div>
       <div class="d-flex gap-2">
+        <a href="/analytics/exclude/" class="btn btn-warning btn-sm" title="Exclude your own visits from analytics">
+          <i class="bi bi-shield-slash me-1"></i>Exclude My Visits
+        </a>
         <a href="/cms/payments/" class="btn btn-light btn-sm">💰 Payments</a>
         <a href="/admin/" class="btn btn-outline-light btn-sm">⚙️ Admin</a>
       </div>
@@ -140,6 +143,118 @@
           <div class="card-body">
             <h5 class="card-title fw-bold mb-3">⏰ Hourly Traffic (Last 24h)</h5>
             <canvas id="hourlyChart" height="60"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bot Detection Stats -->
+    <div class="row g-3 mb-4">
+      <div class="col-lg-3">
+        <div class="card border-0 shadow-sm h-100" style="border-left: 4px solid #dc3545 !important;">
+          <div class="card-body">
+            <h6 class="text-muted mb-2">🤖 Total Bots Blocked</h6>
+            <h3 class="mb-0 fw-bold text-danger">{{ total_bots|default:0 }}</h3>
+            <small class="text-muted">All time</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3">
+        <div class="card border-0 shadow-sm h-100" style="border-left: 4px solid #ffc107 !important;">
+          <div class="card-body">
+            <h6 class="text-muted mb-2">🚫 Today's Bots</h6>
+            <h3 class="mb-0 fw-bold text-warning">{{ today_bots|default:0 }}</h3>
+            <small class="text-muted">Blocked today</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3">
+        <div class="card border-0 shadow-sm h-100" style="border-left: 4px solid #fd7e14 !important;">
+          <div class="card-body">
+            <h6 class="text-muted mb-2">📅 Week's Bots</h6>
+            <h3 class="mb-0 fw-bold" style="color: #fd7e14;">{{ week_bots|default:0 }}</h3>
+            <small class="text-muted">Last 7 days</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3">
+        <div class="card border-0 shadow-sm h-100" style="border-left: 4px solid #6f42c1 !important;">
+          <div class="card-body">
+            <h6 class="text-muted mb-2">📊 Month's Bots</h6>
+            <h3 class="mb-0 fw-bold" style="color: #6f42c1;">{{ month_bots|default:0 }}</h3>
+            <small class="text-muted">Last 30 days</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bot Types & Recent Bot Activity -->
+    <div class="row g-3 mb-4">
+      <div class="col-lg-6">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title fw-bold mb-3">🤖 Top Bot Types (Last 30 Days)</h5>
+            <div class="table-responsive">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th>Bot Type</th>
+                    <th class="text-end">Visits Blocked</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for bot in top_bots %}
+                  <tr>
+                    <td>
+                      <span class="badge bg-danger me-2">BOT</span>
+                      <code class="text-danger">{{ bot.bot_type }}</code>
+                    </td>
+                    <td class="text-end fw-bold">{{ bot.count }}</td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="2" class="text-center text-muted">
+                      <i class="bi bi-shield-check"></i> No bots detected yet
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title fw-bold mb-3">🚨 Recent Bot Visits (Blocked)</h5>
+            <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+              <table class="table table-sm">
+                <thead class="sticky-top bg-white">
+                  <tr>
+                    <th>Time</th>
+                    <th>Bot Type</th>
+                    <th>Path</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for bot in recent_bots %}
+                  <tr>
+                    <td class="small text-muted">{{ bot.timestamp|date:"H:i" }}</td>
+                    <td><code class="text-danger small">{{ bot.bot_type }}</code></td>
+                    <td class="small">{{ bot.path|truncatechars:30 }}</td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="3" class="text-center text-muted">
+                      <i class="bi bi-shield-check"></i> No bots detected
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>

@@ -1,5 +1,18 @@
 from django.contrib import admin
-from .models import PageView, Event
+from .models import PageView, Event, BotVisit
+
+
+@admin.register(BotVisit)
+class BotVisitAdmin(admin.ModelAdmin):
+    list_display = ('bot_type', 'path', 'ip_address', 'timestamp')
+    list_filter = ('bot_type', 'timestamp')
+    search_fields = ('path', 'user_agent', 'ip_address', 'bot_type')
+    readonly_fields = ('timestamp',)
+    date_hierarchy = 'timestamp'
+    
+    def has_add_permission(self, request):
+        # Bot visits are auto-created only
+        return False
 
 
 @admin.register(PageView)

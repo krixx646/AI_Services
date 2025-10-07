@@ -94,6 +94,40 @@
       }
     </style>
   </div>
+  <!-- Post Navigation -->
+  <div class="mt-5 pt-4 border-top">
+    <div class="row g-3">
+      <div class="col-md-6">
+        {% if prev_post %}
+        <a href="/blog/{{ prev_post.slug }}/" class="text-decoration-none">
+          <div class="card h-100 border-0 shadow-sm hover-lift" style="background-color: #f8f9fa;">
+            <div class="card-body">
+              <small class="text-muted d-flex align-items-center mb-2">
+                <i class="bi bi-arrow-left me-2"></i>Previous Post
+              </small>
+              <h6 class="card-title mb-0" style="color: #333;">{{ prev_post.title }}</h6>
+            </div>
+          </div>
+        </a>
+        {% endif %}
+      </div>
+      <div class="col-md-6">
+        {% if next_post %}
+        <a href="/blog/{{ next_post.slug }}/" class="text-decoration-none">
+          <div class="card h-100 border-0 shadow-sm hover-lift" style="background-color: #f8f9fa;">
+            <div class="card-body text-end">
+              <small class="text-muted d-flex align-items-center justify-content-end mb-2">
+                Next Post<i class="bi bi-arrow-right ms-2"></i>
+              </small>
+              <h6 class="card-title mb-0" style="color: #333;">{{ next_post.title }}</h6>
+            </div>
+          </div>
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
   {% if can_manage %}
   <div class="mt-4">
     <a href="/cms/posts/{{ post.id }}/edit/" class="btn btn-outline-primary me-2">Edit Post</a>
@@ -104,6 +138,50 @@
     </form>
   </div>
   {% endif %}
+
+  <!-- Comments Section -->
+  <div class="mt-5 pt-4 border-top">
+    <h3 class="mb-4" style="color: #333;">
+      <i class="bi bi-chat-left-text me-2"></i>Comments <span id="comment-count" class="badge bg-secondary">0</span>
+    </h3>
+    
+    <!-- Comment Form (for authenticated users) -->
+    {% if user.is_authenticated %}
+    <div class="mb-4 p-4 rounded" style="background-color: #f8f9fa;">
+      <h5 class="mb-3" style="color: #333;">Leave a Comment</h5>
+      <form id="comment-form">
+        {% csrf_token %}
+        <div class="mb-3">
+          <textarea 
+            id="comment-content" 
+            class="form-control" 
+            rows="4" 
+            placeholder="Share your thoughts..." 
+            required
+            style="border-color: #81776F;"
+          ></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="background-color: #81776F; border-color: #81776F;">
+          <i class="bi bi-send me-2"></i>Post Comment
+        </button>
+      </form>
+    </div>
+    {% else %}
+    <div class="alert alert-info mb-4">
+      <i class="bi bi-info-circle me-2"></i>
+      Please <a href="/login/?next={{ request.path }}" class="alert-link">sign in</a> to leave a comment.
+    </div>
+    {% endif %}
+    
+    <!-- Comments List -->
+    <div id="comments-container">
+      <div class="text-center py-4">
+        <div class="spinner-border text-secondary" role="status">
+          <span class="visually-hidden">Loading comments...</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Text-to-Speech Script with Google Cloud TTS -->
@@ -405,5 +483,184 @@
       width: 100%;
     }
   }
+  
+  /* Post Navigation Hover Effect */
+  .hover-lift {
+    transition: all 0.3s ease;
+  }
+  .hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15) !important;
+  }
 </style>
+
+<!-- Comments Script -->
+<script>
+(function() {
+  'use strict';
+  
+  const postId = {{ post.id }};
+  const commentsContainer = document.getElementById('comments-container');
+  const commentForm = document.getElementById('comment-form');
+  const commentContent = document.getElementById('comment-content');
+  const commentCount = document.getElementById('comment-count');
+  
+  // Get CSRF token
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+  
+  // Format date
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+    
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
+    if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+    if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+    
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+  }
+  
+  // Render a single comment
+  function renderComment(comment) {
+    const isPending = comment.status === 'pending';
+    const isRejected = comment.status === 'rejected';
+    
+    return `
+      <div class="comment mb-4 p-3 rounded ${isPending ? 'border border-warning' : ''} ${isRejected ? 'd-none' : ''}" style="background-color: #f8f9fa;">
+        <div class="d-flex align-items-start">
+          <div class="flex-shrink-0 me-3">
+            <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+              <i class="bi bi-person-fill"></i>
+            </div>
+          </div>
+          <div class="flex-grow-1">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="mb-0" style="color: #333;">
+                ${comment.author_name || 'Anonymous'}
+                ${isPending ? '<span class="badge bg-warning text-dark ms-2">Pending Approval</span>' : ''}
+              </h6>
+              <small class="text-muted">${formatDate(comment.created_at)}</small>
+            </div>
+            <p class="mb-0" style="color: #666; white-space: pre-wrap;">${escapeHtml(comment.content)}</p>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+  
+  // Escape HTML to prevent XSS
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+  
+  // Load comments
+  async function loadComments() {
+    try {
+      const response = await fetch(`/api/blog/posts/${postId}/comments/?status=approved`);
+      const comments = await response.json();
+      
+      commentCount.textContent = comments.length;
+      
+      if (comments.length === 0) {
+        commentsContainer.innerHTML = `
+          <div class="text-center py-5 text-muted">
+            <i class="bi bi-chat-left-dots" style="font-size: 3rem;"></i>
+            <p class="mt-3">No comments yet. Be the first to comment!</p>
+          </div>
+        `;
+      } else {
+        commentsContainer.innerHTML = comments.map(renderComment).join('');
+      }
+    } catch (error) {
+      console.error('Error loading comments:', error);
+      commentsContainer.innerHTML = `
+        <div class="alert alert-danger">
+          <i class="bi bi-exclamation-triangle me-2"></i>
+          Failed to load comments. Please refresh the page.
+        </div>
+      `;
+    }
+  }
+  
+  // Submit comment
+  if (commentForm) {
+    commentForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const content = commentContent.value.trim();
+      if (!content) return;
+      
+      const submitBtn = commentForm.querySelector('button[type="submit"]');
+      const originalBtnText = submitBtn.innerHTML;
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Posting...';
+      
+      try {
+        const csrftoken = getCookie('csrftoken');
+        const response = await fetch(`/api/blog/posts/${postId}/comments/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken
+          },
+          body: JSON.stringify({ content: content })
+        });
+        
+        if (response.ok) {
+          const comment = await response.json();
+          commentContent.value = '';
+          
+          // Show success message
+          const successMsg = document.createElement('div');
+          successMsg.className = 'alert alert-success alert-dismissible fade show';
+          successMsg.innerHTML = `
+            <i class="bi bi-check-circle me-2"></i>
+            Your comment has been submitted ${comment.status === 'pending' ? 'and is awaiting moderation' : 'successfully'}!
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          `;
+          commentForm.parentNode.insertBefore(successMsg, commentForm);
+          
+          // Reload comments
+          setTimeout(() => {
+            loadComments();
+            successMsg.remove();
+          }, 2000);
+        } else {
+          const error = await response.json();
+          alert(error.detail || 'Failed to post comment. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error posting comment:', error);
+        alert('Failed to post comment. Please try again.');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
+      }
+    });
+  }
+  
+  // Load comments on page load
+  loadComments();
+})();
+</script>
 {% endblock %}

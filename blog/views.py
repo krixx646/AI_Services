@@ -253,7 +253,30 @@ class SiteBlogDetailView(View):
         if post.status != Post.Status.PUBLISHED and not (request.user.is_authenticated and (request.user.is_staff or post.author_id == request.user.id)):
             return redirect('blog_list')
         can_manage = request.user.is_authenticated and (request.user.is_staff or post.author_id == request.user.id)
-        return render(request, 'blog/detail.html', { 'post': post, 'can_manage': can_manage })
+        
+        # Get next and previous published posts
+        next_post = None
+        prev_post = None
+        
+        if post.published_at:
+            next_post = Post.objects.filter(
+                status=Post.Status.PUBLISHED,
+                published_at__gt=post.published_at,
+                published_at__isnull=False
+            ).order_by('published_at').first()
+            
+            prev_post = Post.objects.filter(
+                status=Post.Status.PUBLISHED,
+                published_at__lt=post.published_at,
+                published_at__isnull=False
+            ).order_by('-published_at').first()
+        
+        return render(request, 'blog/detail.html', {
+            'post': post,
+            'can_manage': can_manage,
+            'next_post': next_post,
+            'prev_post': prev_post,
+        })
 
     @method_decorator(login_required)
     def post(self, request, slug: str):

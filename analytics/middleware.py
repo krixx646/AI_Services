@@ -2,7 +2,7 @@ import re
 import requests
 from django.utils.deprecation import MiddlewareMixin
 from django.core.cache import cache
-from .models import PageView
+from .models import PageView, BotVisit
 
 
 class AnalyticsMiddleware(MiddlewareMixin):
@@ -19,6 +19,30 @@ class AnalyticsMiddleware(MiddlewareMixin):
         r'^/robots\.txt$',
     ]
     
+    def is_bot(self, user_agent):
+        """Detect if the user agent is a bot - returns (is_bot, bot_type)"""
+        if not user_agent:
+            return True, 'empty-user-agent'
+        
+        user_agent_lower = user_agent.lower()
+        
+        # Common bot indicators
+        bot_patterns = [
+            'bot', 'crawler', 'spider', 'scraper', 'curl', 'wget',
+            'python-requests', 'java', 'http', 'headless', 'phantom',
+            'selenium', 'playwright', 'puppeteer', 'slurp', 'bingpreview',
+            'googlebot', 'bingbot', 'yandexbot', 'baiduspider', 'facebookexternalhit',
+            'twitterbot', 'linkedinbot', 'whatsapp', 'telegrambot', 'slackbot',
+            'discordbot', 'petalbot', 'ahrefsbot', 'semrushbot', 'mj12bot',
+            'dotbot', 'rogerbot', 'exabot', 'screaming frog', 'archive.org',
+        ]
+        
+        for pattern in bot_patterns:
+            if pattern in user_agent_lower:
+                return True, pattern
+        
+        return False, None
+    
     def process_response(self, request, response):
         # Only track successful GET requests
         if request.method != 'GET' or response.status_code != 200:
@@ -29,6 +53,37 @@ class AnalyticsMiddleware(MiddlewareMixin):
         for pattern in self.EXCLUDE_PATHS:
             if re.match(pattern, path):
                 return response
+        
+        # Exclude admin/staff users from analytics
+        if request.user.is_authenticated and request.user.is_staff:
+            return response
+        
+        # Check for analytics exclusion cookie
+        if request.COOKIES.get('exclude_analytics') == 'true':
+            return response
+        
+        # Check for exclusion URL parameter
+        if request.GET.get('exclude_analytics') == 'true':
+            return response
+        
+        # Check for bots and log them separately
+        user_agent = request.META.get('HTTP_USER_AGENT', '')
+        is_bot, bot_type = self.is_bot(user_agent)
+        
+        if is_bot:
+            # Log bot visit for monitoring (don't count in regular analytics)
+            try:
+                ip_address = self.get_client_ip(request)
+                BotVisit.objects.create(
+                    path=request.path,
+                    user_agent=user_agent[:500],  # Truncate if too long
+                    ip_address=ip_address,
+                    bot_type=bot_type or 'unknown',
+                )
+            except Exception:
+                pass  # Don't break if bot logging fails
+            
+            return response  # Don't track in regular analytics
         
         try:
             # Get or create session key

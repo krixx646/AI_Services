@@ -1,7 +1,27 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 
 User = get_user_model()
+
+
+class BotVisit(models.Model):
+    """Track bot visits separately (for monitoring)"""
+    timestamp = models.DateTimeField(default=timezone.now, db_index=True)
+    path = models.CharField(max_length=500)
+    user_agent = models.TextField(blank=True)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    bot_type = models.CharField(max_length=100, blank=True)  # e.g., "googlebot", "curl"
+    
+    class Meta:
+        ordering = ['-timestamp']
+        indexes = [
+            models.Index(fields=['timestamp']),
+            models.Index(fields=['bot_type', 'timestamp']),
+        ]
+    
+    def __str__(self):
+        return f"{self.bot_type} - {self.path} ({self.timestamp.strftime('%Y-%m-%d %H:%M')})"
 
 
 class PageView(models.Model):

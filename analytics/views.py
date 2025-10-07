@@ -4,7 +4,7 @@ from django.db.models import Count, Q
 from django.db.models.functions import TruncDate, TruncHour
 from django.utils import timezone
 from datetime import timedelta
-from .models import PageView, Event
+from .models import PageView, Event, BotVisit
 
 
 def is_staff(user):
@@ -130,6 +130,22 @@ def analytics_dashboard(request):
     # Recent events
     recent_events = Event.objects.select_related('user').order_by('-timestamp')[:20]
     
+    # Bot statistics
+    total_bots = BotVisit.objects.count()
+    today_bots = BotVisit.objects.filter(timestamp__date=today).count()
+    week_bots = BotVisit.objects.filter(timestamp__gte=week_ago).count()
+    month_bots = BotVisit.objects.filter(timestamp__gte=month_ago).count()
+    
+    # Top bot types (last 30 days)
+    top_bots = BotVisit.objects.filter(
+        timestamp__gte=month_ago
+    ).values('bot_type').annotate(
+        count=Count('id')
+    ).order_by('-count')[:10]
+    
+    # Recent bot visits
+    recent_bots = BotVisit.objects.order_by('-timestamp')[:20]
+    
     # Calculate growth rates
     views_growth = calculate_growth(today_views, yesterday_views)
     visitors_growth = calculate_growth(today_visitors, yesterday_visitors)
@@ -165,6 +181,14 @@ def analytics_dashboard(request):
         'top_countries': list(top_countries),
         'top_cities': list(top_cities),
         'recent_events': recent_events,
+        
+        # Bot stats
+        'total_bots': total_bots,
+        'today_bots': today_bots,
+        'week_bots': week_bots,
+        'month_bots': month_bots,
+        'top_bots': list(top_bots),
+        'recent_bots': recent_bots,
     }
     
     return render(request, 'analytics/dashboard.html', context)
@@ -175,3 +199,19 @@ def calculate_growth(current, previous):
     if previous == 0:
         return 100 if current > 0 else 0
     return round(((current - previous) / previous) * 100, 1)
+
+
+def exclude_from_analytics(request):
+    """Page to exclude/include user from analytics tracking"""
+    # Check if user is currently excluded
+    excluded = False
+    
+    # Check cookie
+    if request.COOKIES.get('exclude_analytics') == 'true':
+        excluded = True
+    
+    # Staff users are auto-excluded
+    if request.user.is_authenticated and request.user.is_staff:
+        excluded = True
+    
+    return render(request, 'analytics/exclude.html', {'excluded': excluded})
