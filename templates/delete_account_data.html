@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Account & Data Deletion | Xpenze{% endblock %}
+{% block description %}How to request account and data deletion for Xpenze.{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-10 col-xl-9">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-4 p-md-5">
+            <h1 class="h2 fw-bold mb-3">Account &amp; Data Deletion - Xpenze</h1>
+
+            <p>You can delete your account directly in the app:</p>
+            <p><strong>Settings -&gt; Danger Zone -&gt; Delete Account</strong></p>
+
+            <p>
+              This action removes local app data on your device and initiates account removal workflows.
+            </p>
+
+            <h2 class="h5 mt-4">Cannot Log In?</h2>
+            <p class="mb-2">Send a deletion request to:</p>
+            <p class="mb-1"><strong>Email:</strong> <a href="mailto:krixxvalle@gmail.com">krixxvalle@gmail.com</a></p>
+            <p><strong>Subject:</strong> "Xpenze Data Deletion Request"</p>
+
+            <h2 class="h5 mt-4">Include</h2>
+            <ul>
+              <li>Account email used in Xpenze</li>
+              <li>Optional: user ID</li>
+              <li>"Please delete my account and associated data"</li>
+            </ul>
+
+            <p class="mb-0">
+              After identity verification, we process requests within a reasonable period (typically within 30 days),
+              except where retention is legally required.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

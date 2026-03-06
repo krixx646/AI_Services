@@ -79,6 +79,8 @@ urlpatterns = [
     path('cms/comments/delete/', blog_views.CmsCommentDeleteView.as_view(), name='cms_comments_delete'),
     path('pricing/', PricingPageView.as_view(), name='pricing'),
     path('pricing/assignments/', TemplateView.as_view(template_name='pricing_assignments.html'), name='pricing_assignments'),
+    path('privacy-policy/', TemplateView.as_view(template_name='privacy_policy.html'), name='privacy_policy'),
+    path('delete-account-data/', TemplateView.as_view(template_name='delete_account_data.html'), name='delete_account_data'),
     path('login/', LoginPageView.as_view(), name='login'),
     path('signup/', SignupPageView.as_view(), name='signup'),
     path('profile/', ProfilePageView.as_view(), name='profile'),
