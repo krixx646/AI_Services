@@ -561,3 +561,123 @@
   }
 }
 
+/* Portfolio positioning and mobile navigation */
+.portfolio-ai-tools{
+  flex-direction: row !important;
+}
+
+.portfolio-ai-tools .badge{
+  font-weight: 600;
+  padding: .45rem .7rem;
+}
+
+.portfolio-actions{
+  align-items: stretch;
+}
+
+.skill-card .d-flex.flex-wrap{
+  flex-direction: row !important;
+}
+
+@media (max-width: 991.98px){
+  .brand-nav{
+    background: rgba(107, 95, 86, .96) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .12);
+    backdrop-filter: blur(12px);
+  }
+
+  .brand-nav .container{
+    position: relative;
+  }
+
+  .brand-nav .navbar-collapse{
+    position: absolute;
+    top: calc(100% + .6rem);
+    left: .75rem;
+    right: .75rem;
+    z-index: 1050;
+    margin-top: 0;
+    padding: .85rem;
+    background: rgba(67, 59, 52, .98);
+    border: 1px solid rgba(255, 255, 255, .16);
+    border-radius: 16px;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, .28);
+  }
+
+  .brand-nav .navbar-nav{
+    align-items: stretch !important;
+  }
+
+  .brand-nav .nav-item{
+    padding: .1rem 0;
+  }
+
+  .brand-nav .nav-link{
+    border-radius: 10px;
+    color: rgba(255, 255, 255, .88) !important;
+    padding: .7rem .85rem !important;
+  }
+
+  .brand-nav .nav-link:hover,
+  .brand-nav .nav-link:focus{
+    background: rgba(255, 255, 255, .1);
+    color: #fff !important;
+  }
+
+  .brand-nav .btn{
+    width: 100%;
+    margin-top: .35rem;
+  }
+
+  .portfolio-hero{
+    padding: 72px 0 48px !important;
+  }
+
+  .portfolio-hero h1{
+    font-size: 2.1rem !important;
+    line-height: 1.12;
+  }
+
+  .portfolio-hero h2{
+    font-size: 1.12rem !important;
+    line-height: 1.35;
+  }
+
+  .portfolio-hero .lead{
+    font-size: 1rem !important;
+  }
+
+  .portfolio-actions{
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .75rem !important;
+  }
+
+  .portfolio-actions .btn{
+    width: 100%;
+    min-height: 50px;
+    padding: .75rem .6rem !important;
+  }
+
+  .portfolio-contact{
+    flex-direction: column !important;
+    gap: .7rem !important;
+  }
+
+  .portfolio-profile-frame{
+    width: 230px !important;
+    height: 230px !important;
+  }
+}
+
+@media (max-width: 380px){
+  .portfolio-actions{
+    grid-template-columns: 1fr;
+  }
+
+  .portfolio-profile-frame{
+    width: 210px !important;
+    height: 210px !important;
+  }
+}
+
