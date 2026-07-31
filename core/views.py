@@ -4,6 +4,7 @@ from rest_framework.permissions import AllowAny
 from django.db import models
 from django.views.generic import TemplateView
 from django.conf import settings
+from django.http import HttpResponse
 
 
 class SearchView(views.APIView):
@@ -120,4 +121,11 @@ class PricingPageView(TemplateView):
         ctx["SHOW_USD"] = show_usd
         ctx["GATED_CURRENCY"] = gated_currency
         return ctx
+
+
+def app_ads_txt(request):
+    return HttpResponse(
+        "google.com, pub-3679558664849483, DIRECT, f08c47fec0942fa0\n",
+        content_type="text/plain",
+    )
 

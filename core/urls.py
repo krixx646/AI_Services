@@ -20,7 +20,7 @@ from django.contrib.auth import views as auth_views
 from django.views.generic import TemplateView
 from django.contrib.sitemaps.views import sitemap
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
-from .views import SearchView, PricingPageView
+from .views import SearchView, PricingPageView, app_ads_txt
 from .sitemaps import StaticViewSitemap, BlogPostSitemap
 from accounts.views import LoginPageView, SignupPageView, ProfilePageView, LogoutView, DashboardView
 from django.conf import settings
@@ -106,6 +106,7 @@ urlpatterns = [
     ), name='password_reset_complete'),
     
     # SEO files
+    path('app-ads.txt', app_ads_txt, name='app-ads'),
     path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type='text/plain'), name='robots'),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     

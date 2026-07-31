@@ -16,6 +16,7 @@ class AnalyticsMiddleware(MiddlewareMixin):
         r'^/api/',
         r'^/cms/',
         r'^/favicon\.ico$',
+        r'^/app-ads\.txt$',
         r'^/robots\.txt$',
     ]
     
