@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block title %}Privacy Policy | ElderLog AI{% endblock %}
+{% block description %}Privacy Policy for ElderLog AI Caregiver Log (com.chelumore.elderlogai).{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-10 col-xl-9">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-4 p-md-5 text-dark">
+            <h1 class="h2 fw-bold mb-2">ElderLog AI — Privacy Policy</h1>
+            <p class="text-muted mb-1"><strong>Effective / last updated:</strong> 2026-09-09</p>
+            <p class="text-muted mb-1"><strong>App:</strong> ElderLog AI Caregiver Log (<code>com.chelumore.elderlogai</code>) on Google Play</p>
+            <p class="text-muted mb-4"><strong>Developer contact:</strong> <a href="mailto:krixxvalle@gmail.com">krixxvalle@gmail.com</a></p>
+
+            <h2 class="h5 mt-4">1. Who we are and what this app is</h2>
+            <p>
+              ElderLog AI is a <strong>care coordination and logging</strong> app for adult family caregivers.
+              You can speak or type care updates (medication given, meals, vitals readings you record, incidents, notes),
+              confirm them, share them with an invited care circle, and generate a doctor/hospital <strong>coordination packet</strong>.
+            </p>
+            <p>
+              <strong>ElderLog AI is not a medical device.</strong> It does <strong>not</strong> diagnose conditions,
+              prescribe or dose medication, provide clinical advice, or replace a licensed clinician or emergency services.
+              If someone needs urgent medical help, call local emergency services.
+            </p>
+
+            <h2 class="h5 mt-4">2. Data we collect</h2>
+            <div class="table-responsive">
+              <table class="table table-bordered align-middle">
+                <thead>
+                  <tr>
+                    <th>Category</th>
+                    <th>Examples</th>
+                    <th>Purpose</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Account</td>
+                    <td>Email, display name, authentication identifiers</td>
+                    <td>Sign-in (Firebase Auth), caregiver identity</td>
+                  </tr>
+                  <tr>
+                    <td>Care circle</td>
+                    <td>Group name, invite code, member roles, elder/care-recipient name</td>
+                    <td>Family coordination</td>
+                  </tr>
+                  <tr>
+                    <td>Care events</td>
+                    <td>Content you confirm (voice transcript drafts, structured fields, timestamps); optional photo label text / image paths for Premium photo+voice</td>
+                    <td>Sync, handoff briefs, PDF packets, Copilot (Premium)</td>
+                  </tr>
+                  <tr>
+                    <td>Device / prefs</td>
+                    <td>App language, notification preferences, local premium entitlement cache</td>
+                    <td>App behavior</td>
+                  </tr>
+                  <tr>
+                    <td>Push tokens</td>
+                    <td>FCM device token</td>
+                    <td>Care-update and handoff notifications (when enabled)</td>
+                  </tr>
+                  <tr>
+                    <td>Billing</td>
+                    <td>Google Play subscription / purchase status</td>
+                    <td>Premium entitlements (processed by Google)</td>
+                  </tr>
+                  <tr>
+                    <td>Ads (Free tier)</td>
+                    <td>AdMob advertising / request identifiers</td>
+                    <td>Non-invasive banner ads</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p>
+              <strong>AI processing:</strong> Voice transcripts (and, for Premium Copilot, chat messages / tool context)
+              may be sent to our Supabase Edge Functions, which call <strong>Google Gemini</strong> to draft structured logs
+              or coordination replies. <strong>Care logs are not saved until you confirm</strong> in the app.
+              We do <strong>not</strong> use your care logs to train public AI models.
+            </p>
+
+            <h2 class="h5 mt-4">3. How we store and who processes data</h2>
+            <ul>
+              <li><strong>On your device:</strong> local Room database cache and preference stores</li>
+              <li><strong>Supabase:</strong> care groups, members, patients, care events, optional care-photo storage (with access controls / RLS)</li>
+              <li><strong>Firebase (Google):</strong> Authentication, Cloud Messaging</li>
+              <li><strong>Google Play Billing:</strong> subscriptions</li>
+              <li><strong>Google AdMob:</strong> Free-tier ads</li>
+              <li><strong>Google Gemini (via our Edge Functions):</strong> drafting assistance only</li>
+            </ul>
+            <p>
+              Data may be processed on servers in regions used by these providers
+              (including the United States and other locations where those services operate).
+            </p>
+
+            <h2 class="h5 mt-4">4. Sharing</h2>
+            <p>We do <strong>not</strong> sell your personal information. We share data only:</p>
+            <ul>
+              <li>With <strong>members of your care circle</strong> (the care events and circle details you participate in)</li>
+              <li>With <strong>processors</strong> listed above, as needed to run the app</li>
+              <li>When required by law or to protect safety / rights</li>
+            </ul>
+
+            <h2 class="h5 mt-4">5. Retention</h2>
+            <ul>
+              <li>Account and care-circle data are kept while your account / circle membership is active.</li>
+              <li>Local caches remain on device until you clear app data or uninstall.</li>
+              <li>
+                After account deletion requests are completed, we delete or anonymize personal data we control,
+                except where we must retain limited records for legal, security, or abuse-prevention reasons.
+              </li>
+            </ul>
+
+            <h2 class="h5 mt-4">6. Your choices and rights</h2>
+            <p>In the app you can:</p>
+            <ul>
+              <li>Export care data: <strong>Settings → Export my data</strong></li>
+              <li>Leave a care circle / sign out</li>
+              <li>Change language and notification preferences</li>
+              <li>Manage system notification permission in Android settings</li>
+              <li>Upgrade / cancel Premium via <strong>Google Play</strong> subscription management</li>
+            </ul>
+            <p>
+              <strong>Account deletion:</strong> Email
+              <a href="mailto:krixxvalle@gmail.com">krixxvalle@gmail.com</a>
+              from the address on your account with subject <strong>“ElderLog account deletion”</strong>.
+              We aim to complete deletion within <strong>30 days</strong>.
+              Google Play also requires a clear deletion path; this email request is the supported method for v1.
+            </p>
+            <p>
+              Depending on where you live, you may have rights to access, correct, delete, or export personal data,
+              or to object to certain processing. Contact us to exercise those rights.
+            </p>
+
+            <h2 class="h5 mt-4">7. Children</h2>
+            <p>
+              ElderLog AI is intended for <strong>adult caregivers</strong> (13+; typically 18+) coordinating care for elders.
+              It is <strong>not directed at children under 13</strong> as primary users.
+              We do not knowingly collect personal information from children under 13.
+              If you believe a child has provided data, contact us and we will delete it.
+            </p>
+
+            <h2 class="h5 mt-4">8. Security</h2>
+            <p>
+              We use industry-standard providers, encrypted transport (HTTPS), and access controls
+              (including database row-level security for circle data).
+              No method of transmission or storage is 100% secure.
+            </p>
+
+            <h2 class="h5 mt-4">9. Permissions (Android)</h2>
+            <p>Depending on features you use, the app may request:</p>
+            <ul>
+              <li><strong>Microphone</strong> — voice care logs</li>
+              <li><strong>Camera</strong> — Premium photo + voice label assist</li>
+              <li><strong>Notifications</strong> — care updates / handoff digest</li>
+              <li><strong>Internet</strong> — sync, auth, ads, AI drafting</li>
+            </ul>
+
+            <h2 class="h5 mt-4">10. Contact</h2>
+            <p>
+              Questions, privacy requests, or account deletion:<br>
+              <strong><a href="mailto:krixxvalle@gmail.com">krixxvalle@gmail.com</a></strong>
+            </p>
+
+            <h2 class="h5 mt-4">11. Changes</h2>
+            <p class="mb-0">
+              We may update this policy. The “last updated” date will change, and the in-app Privacy screen should stay
+              aligned with this hosted page. Continued use after updates means you acknowledge the revised policy.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

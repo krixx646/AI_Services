@@ -80,6 +80,8 @@ urlpatterns = [
     path('pricing/', PricingPageView.as_view(), name='pricing'),
     path('pricing/assignments/', TemplateView.as_view(template_name='pricing_assignments.html'), name='pricing_assignments'),
     path('privacy-policy/', TemplateView.as_view(template_name='privacy_policy.html'), name='privacy_policy'),
+    path('privacy/', TemplateView.as_view(template_name='elderlog_privacy.html'), name='elderlog_privacy'),
+    path('terms/', TemplateView.as_view(template_name='elderlog_terms.html'), name='elderlog_terms'),
     path('delete-account-data/', TemplateView.as_view(template_name='delete_account_data.html'), name='delete_account_data'),
     path('login/', LoginPageView.as_view(), name='login'),
     path('signup/', SignupPageView.as_view(), name='signup'),
