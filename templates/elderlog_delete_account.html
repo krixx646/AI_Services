@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Delete Account | ElderLog AI{% endblock %}
+{% block description %}How to delete your ElderLog AI account in the app or by email, as required by Google Play.{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-10 col-xl-9">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-4 p-md-5 text-dark">
+            <h1 class="h2 fw-bold mb-2">Delete your ElderLog AI account</h1>
+            <p class="text-muted mb-4">
+              Google Play requires a way to request account deletion without installing the app. Use either path below.
+            </p>
+
+            <h2 class="h5 mt-4">In the app (fastest)</h2>
+            <ol>
+              <li>Open <strong>ElderLog AI</strong> and sign in</li>
+              <li>Go to <strong>Settings</strong></li>
+              <li>Tap <strong>Delete account</strong> and confirm</li>
+            </ol>
+            <p>
+              Deletion removes your account profile and personal care data from our servers and this device.
+            </p>
+            <ul>
+              <li>If you are the <strong>only member</strong> of a care circle, that circle is deleted.</li>
+              <li>If <strong>other members</strong> remain, shared care logs stay for them; your membership is removed.</li>
+              <li>This cannot be undone.</li>
+            </ul>
+
+            <h2 class="h5 mt-4">Without the app</h2>
+            <p>
+              Email
+              <a href="mailto:krixxvalle@gmail.com?subject=ElderLog%20account%20deletion"><strong>krixxvalle@gmail.com</strong></a>
+              from the address on your account with subject:
+            </p>
+            <p><strong>ElderLog account deletion</strong></p>
+            <p>
+              Include the email you used to sign in. We aim to complete deletion within <strong>30 days</strong>.
+            </p>
+
+            <h2 class="h5 mt-4">Subscriptions</h2>
+            <p>
+              Premium is billed by <strong>Google Play</strong>. Cancel or manage billing in Play →
+              <strong>Payments &amp; subscriptions</strong>. Deleting your ElderLog account does not automatically
+              cancel a Play subscription.
+            </p>
+
+            <h2 class="h5 mt-4">Contact</h2>
+            <p>
+              Questions:
+              <a href="mailto:krixxvalle@gmail.com">krixxvalle@gmail.com</a>
+            </p>
+            <p class="mb-0">
+              Related:
+              <a href="{% url 'elderlog_privacy' %}">Privacy Policy</a>
+              ·
+              <a href="{% url 'elderlog_terms' %}">Terms of Use</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
